@@ -1,26 +1,16 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Your custom My Happy Earth color palette */
+  --color-earth-light: #FAF3DD;
+  --color-earth-sage: #A3B18A;
+  --color-earth-leaf: #588157;
+  --color-earth-forest: #3A5A40;
+  --color-earth-deep: #344E41;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* You can keep any other custom base CSS below this */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-earth-light);
+  color: var(--color-earth-deep);
 }
