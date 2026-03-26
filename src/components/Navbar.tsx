@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 
 export default function Navbar({ 
@@ -43,7 +44,7 @@ export default function Navbar({
       <Link href="/" className={`flex items-center gap-2 font-bold text-xl cursor-pointer transition-colors duration-500 ${
         invert && !activeScrolled ? 'text-earth-deep' : ''
       }`}>
-        <span className="text-earth-sage">🌿</span> My Happy Earth
+        <Image src="/logo.png" alt="Happy Earth Logo" width={32} height={32} className="w-20 h-20" />
       </Link>
 
       {/* Navigation Links */}

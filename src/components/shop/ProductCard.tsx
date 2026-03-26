@@ -44,9 +44,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.description}
         </p>
         
-        <p className="font-extrabold text-2xl text-earth-light tracking-tight">
+        {/* <p className="font-extrabold text-2xl text-earth-light tracking-tight">
           {product.price}
-        </p>
+        </p> */}
         
         {/* Star Rating */}
         <div className="flex items-center gap-1 mt-1">

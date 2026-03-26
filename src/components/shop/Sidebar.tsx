@@ -60,7 +60,7 @@ export default function Sidebar({
       <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-8">
         
         {/* Price Slider */}
-        <div className="flex flex-col gap-4">
+        {/* <div className="flex flex-col gap-4">
           <h3 className="font-bold text-gray-800">Price Range: Up to ${maxPrice}</h3>
           <div className="relative pt-4 pb-2">
             <input 
@@ -78,7 +78,7 @@ export default function Sidebar({
           <div className="flex justify-between text-sm font-medium text-gray-500">
             <span>$0</span><span>$200+</span>
           </div>
-        </div>
+        </div> */}
 
         <div className="w-full h-px bg-gray-100"></div>
 

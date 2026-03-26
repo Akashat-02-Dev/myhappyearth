@@ -130,7 +130,7 @@ export default function Footer() {
                 Proudly Australia Owned
               </span>
             </div>
-            <PaymentMethods />
+            {/* <PaymentMethods /> */}
           </div>
 
           {/* Bottom Right: Copyright */}
