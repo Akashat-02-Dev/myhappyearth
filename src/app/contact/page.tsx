@@ -1,16 +1,30 @@
 "use client";
 
+import React, { Suspense } from 'react';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+
+// Global Components
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
+// Your Contact Components
 import ContactHeader from '@/components/contact/ContactHeader';
 import ContactIconsGrid from '@/components/contact/ContactIconsGrid';
 import ContactHeroDetails from '@/components/contact/ContactHeroDetails';
 import ContactFormWrapper from '@/components/contact/ContactFormWrapper';
 
-export default function ContactUsPage() {
-  
+// Your New FAQ Component
+import ContactFAQSection from '@/components/contact/ContactFAQSection';
+
+// --- INNER CONTENT COMPONENT ---
+// This handles the logic of reading the URL and swapping the views
+const ContactContent = () => {
+  const searchParams = useSearchParams();
+  const view = searchParams.get('view');
+  const isFAQView = view === 'faq';
+
+  // Your existing scroll logic
   const scrollToForm = () => {
     document.getElementById('contact-form-section')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -19,13 +33,35 @@ export default function ContactUsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  return (
-    <main className="relative w-full bg-earth-deep">
-      
-      <div className="absolute top-0 w-full z-50">
-        <Navbar invert={true} />
-      </div>
+  // 1. IF THE USER CLICKED "FAQs" IN NAVBAR/FOOTER
+  if (isFAQView) {
+    return (
+      <div className="w-full flex-grow pt-36 pb-12 bg-earth-light flex flex-col items-center">
+        
+        {/* Optional: A sleek toggle to let users easily switch back to the contact form */}
+        <div className="max-w-md w-full mx-auto flex bg-earth-forest/10 rounded-full p-1 mb-8">
+          <a 
+            href="/contact?view=form" 
+            className="flex-1 text-center py-2.5 rounded-full font-semibold text-sm transition-all text-earth-deep hover:bg-white/50"
+          >
+            Contact Form
+          </a>
+          <a 
+            href="/contact?view=faq" 
+            className="flex-1 text-center py-2.5 rounded-full font-semibold text-sm transition-all text-earth-deep bg-white shadow-sm"
+          >
+            FAQs
+          </a>
+        </div>
 
+        <ContactFAQSection />
+      </div>
+    );
+  }
+
+  // 2. DEFAULT VIEW: YOUR EXISTING CONTACT HERO & FORM
+  return (
+    <>
       {/* SECTION 1: Standard Static Hero */}
       <section className="relative w-full h-screen flex flex-col bg-earth-deep z-10">
         <div className="absolute inset-0 w-full h-full">
@@ -61,9 +97,9 @@ export default function ContactUsPage() {
       </section>
 
       {/* SECTION 2: Stacked Form Section */}
-      <section id="contact-form-section" className="relative w-full bg-earth-deep z-20">
+      <section id="contact-form-section" className="relative w-full bg-earth-deep z-20 pb-20">
         
-        {/* Back to top button positioned within the form flow */}
+        {/* Back to top button */}
         <div className="absolute top-12 md:top-24 left-6 md:left-12 z-50">
           <button 
             onClick={scrollToTop}
@@ -78,9 +114,30 @@ export default function ContactUsPage() {
         </div>
 
         <ContactFormWrapper />
-        <Footer />
         
       </section>
+    </>
+  );
+};
+
+// --- MAIN PAGE ORCHESTRATOR ---
+export default function ContactUsPage() {
+  return (
+    <main className="relative w-full bg-earth-deep min-h-screen flex flex-col">
+      
+      <div className="absolute top-0 w-full z-50">
+        <Navbar invert={true} />
+      </div>
+
+      {/* Next.js requires components using useSearchParams to be wrapped in a Suspense boundary.
+        This handles the loading state cleanly before the URL is fully parsed.
+      */}
+      <Suspense fallback={<div className="h-screen w-full flex items-center justify-center text-earth-light">Loading content...</div>}>
+        <ContactContent />
+      </Suspense>
+
+      {/* Footer rendered globally so it appears on both the FAQ and Contact views */}
+      <Footer />
 
     </main>
   );

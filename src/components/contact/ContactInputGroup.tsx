@@ -21,6 +21,7 @@ export default function ContactInputGroup({ label, type, placeholder, icon }: Co
           type={type} 
           placeholder={placeholder}
           className="w-full h-12 md:h-14 pl-12 pr-4 bg-earth-light border-2 border-earth-deep rounded-xl font-sans text-earth-deep focus:border-earth-leaf focus:ring-1 focus:ring-earth-leaf transition-colors duration-300 outline-none"
+          suppressHydrationWarning={true}
         />
       </div>
     </div>

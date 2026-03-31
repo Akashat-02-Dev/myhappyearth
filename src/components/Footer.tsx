@@ -2,6 +2,22 @@
 
 import Link from 'next/link';
 
+// Helper function to handle routing logic dynamically while preserving the custom Contact page views
+const getHrefForLink = (linkName: string) => {
+  switch (linkName) {
+    case 'Contact Us':
+    case 'Enquiry':
+      return '/contact?view=form';
+    case 'FAQs':
+      return '/contact?view=faq';
+    case 'Blog':
+      return '/impact';
+    default:
+      // Standard dynamic routing for shop and other pages
+      return `/${linkName.toLowerCase().replace(/ & /g, '-and-').replace(/ /g, '-')}`;
+  }
+};
+
 // Sub-component for a list of links
 function FooterLinkColumn({ title, links }: { title: string, links: string[] }) {
   return (
@@ -12,7 +28,7 @@ function FooterLinkColumn({ title, links }: { title: string, links: string[] }) 
       {links.map((link, index) => (
         <Link 
           key={index} 
-          href={`/${link.toLowerCase().replace(/ & /g, '-and-').replace(/ /g, '-')}`} 
+          href={getHrefForLink(link)} 
           className="text-white hover:text-earth-sage hover:translate-x-1 transition-all duration-300 w-fit"
         >
           {link}
@@ -74,16 +90,22 @@ export default function Footer() {
           </div>
           
           {/* Column 2: Shop Links */}
-          <FooterLinkColumn title="Shop" links={shopLinks} />
+          <div className="hidden lg:block">
+            <FooterLinkColumn title="Shop" links={shopLinks} />
+          </div>
           
           {/* Column 3: Company Links */}
-          <FooterLinkColumn title="Company" links={companyLinks} />
+          <div className="hidden lg:block">
+            <FooterLinkColumn title="Company" links={companyLinks} />
+          </div>
 
           {/* Column 4: Support Links */}
-          <FooterLinkColumn title="Support" links={supportLinks} />
+          <div className="hidden lg:block">
+            <FooterLinkColumn title="Support" links={supportLinks} />
+          </div>
 
           {/* Column 5: Subscription */}
-          <div className="flex flex-col items-start gap-4 group">
+          <div className="flex flex-col items-start gap-4 group lg:col-span-2 xl:col-span-1">
             <h4 className="text-xl font-bold uppercase tracking-wider text-earth-light/90 mb-2 transition-colors duration-300">
               Join Our Community
             </h4>
@@ -92,7 +114,6 @@ export default function Footer() {
             </p>
             <div className="flex w-full gap-3">
               
-              {/* THE FIX: suppressHydrationWarning added here */}
               <input 
                 type="email" 
                 placeholder="Enter your email" 
@@ -115,7 +136,7 @@ export default function Footer() {
             {supportLinks.map((link, index) => (
               <Link 
                 key={index} 
-                href={`/${link.toLowerCase().replace(/ & /g, '-and-').replace(/ /g, '-')}`} 
+                href={getHrefForLink(link)} 
                 className="relative text-white/80 hover:text-white transition-colors duration-300 after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-[1px] after:bg-earth-sage hover:after:w-full after:transition-all after:duration-300"
               >
                 {link}
