@@ -1,4 +1,4 @@
-// components/product/ProductDetails.tsx
+// src/components/productDetails/ProductDetails.tsx
 import React from 'react';
 import ProductHeader from './ProductHeader';
 import SustainableAttributes from './SustainableAttributes';
@@ -6,7 +6,7 @@ import ProductActions from './ProductActions';
 import SustainableProof from './SustainableProof';
 
 interface ProductDetailsProps {
-  data: any; // Type with exact fields is better in production
+  data: any; 
   quantity: number;
   setQuantity: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -22,6 +22,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, quantity, setQuan
       />
       <SustainableAttributes attributes={data.sustainableAttributes} />
       <ProductActions
+        productName={data.title} // THE FIX: Passing the product name down
         description={data.description}
         quantity={quantity}
         setQuantity={setQuantity}

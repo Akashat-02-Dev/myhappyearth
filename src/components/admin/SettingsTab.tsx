@@ -2,77 +2,176 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { getCategories, saveCategories, getMaterials, saveMaterials } from '@/data/shopData';
-import { Trash2, Plus } from 'lucide-react';
+import { getShopSettings, saveShopSettings, ShopSettings } from '@/data/settingsData';
+import { Plus, X, Layers, Tag, Loader2 } from 'lucide-react';
 
 export default function SettingsTab() {
-  const [categories, setCategories] = useState<string[]>([]);
-  const [materials, setMaterials] = useState<string[]>([]);
+  const [settings, setSettings] = useState<ShopSettings>({ categories: [], materials: [] });
+  const [loading, setLoading] = useState(true);
+  
   const [newCategory, setNewCategory] = useState('');
   const [newMaterial, setNewMaterial] = useState('');
 
+  // Fetch settings on mount
   useEffect(() => {
-    setCategories(getCategories());
-    setMaterials(getMaterials());
+    const fetchSettings = async () => {
+      const data = await getShopSettings();
+      setSettings(data);
+      setLoading(false);
+    };
+    fetchSettings();
   }, []);
 
-  // Generic handler for adding to a list
-  const handleAdd = (item: string, list: string[], setList: (v: string[]) => void, saveFn: (v: string[]) => void, resetInput: () => void) => {
-    if (!item.trim() || list.includes(item.trim())) return;
-    const updated = [...list, item.trim()];
-    setList(updated);
-    saveFn(updated);
-    resetInput();
+  // --- CATEGORY HANDLERS ---
+  const handleAddCategory = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanValue = newCategory.trim();
+    if (!cleanValue || settings.categories.includes(cleanValue)) return;
+
+    const updatedSettings = { ...settings, categories: [...settings.categories, cleanValue] };
+    setSettings(updatedSettings); // Update UI instantly
+    setNewCategory('');
+    await saveShopSettings(updatedSettings); // Save to Firebase
   };
 
-  // Generic handler for deleting from a list
-  const handleDelete = (itemToRemove: string, list: string[], setList: (v: string[]) => void, saveFn: (v: string[]) => void) => {
-    if (window.confirm(`Delete "${itemToRemove}"? This may affect products using this tag.`)) {
-      const updated = list.filter(i => i !== itemToRemove);
-      setList(updated);
-      saveFn(updated);
-    }
+  const handleRemoveCategory = async (categoryToRemove: string) => {
+    const updatedSettings = { 
+      ...settings, 
+      categories: settings.categories.filter(c => c !== categoryToRemove) 
+    };
+    setSettings(updatedSettings);
+    await saveShopSettings(updatedSettings);
   };
 
-  const ListManager = ({ title, list, setList, saveFn, newItem, setNewItem, placeholder }: any) => (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-4">
-      <h3 className="font-bold text-lg text-gray-800">{title}</h3>
-      <div className="flex gap-2">
-        <input 
-          type="text" value={newItem} onChange={(e) => setNewItem(e.target.value)}
-          placeholder={placeholder}
-          className="flex-grow border border-gray-300 rounded-xl px-4 py-2 focus:ring-[#6F9B69] outline-none"
-        />
-        <button 
-          onClick={() => handleAdd(newItem, list, setList, saveFn, () => setNewItem(''))}
-          className="bg-[#6F9B69] text-white px-4 py-2 rounded-xl hover:bg-[#5b8256] transition flex items-center gap-1"
-        >
-          <Plus className="w-5 h-5" /> Add
-        </button>
+  // --- MATERIAL HANDLERS ---
+  const handleAddMaterial = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanValue = newMaterial.trim();
+    if (!cleanValue || settings.materials.includes(cleanValue)) return;
+
+    const updatedSettings = { ...settings, materials: [...settings.materials, cleanValue] };
+    setSettings(updatedSettings); 
+    setNewMaterial('');
+    await saveShopSettings(updatedSettings);
+  };
+
+  const handleRemoveMaterial = async (materialToRemove: string) => {
+    const updatedSettings = { 
+      ...settings, 
+      materials: settings.materials.filter(m => m !== materialToRemove) 
+    };
+    setSettings(updatedSettings);
+    await saveShopSettings(updatedSettings);
+  };
+
+  if (loading) {
+    return (
+      <div className="w-full py-20 flex flex-col items-center justify-center text-gray-400 gap-3">
+        <Loader2 className="w-8 h-8 animate-spin text-[#6F9B69]" />
+        <p className="font-medium">Loading store configurations...</p>
       </div>
-      <div className="flex flex-col gap-2 mt-2">
-        {list.map((item: string, i: number) => (
-          <div key={i} className="flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100">
-            <span className="font-medium text-gray-700">{item}</span>
-            <button onClick={() => handleDelete(item, list, setList, saveFn)} className="text-red-500 hover:bg-red-50 p-1.5 rounded-lg transition">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+    );
+  }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl">
-      <ListManager 
-        title="Manage Categories (Header Tabs)" list={categories} setList={setCategories} saveFn={saveCategories} 
-        newItem={newCategory} setNewItem={setNewCategory} placeholder="e.g., Electronics"
-      />
-      <ListManager 
-        title="Manage Materials (Sidebar Filters)" list={materials} setList={setMaterials} saveFn={saveMaterials} 
-        newItem={newMaterial} setNewItem={setNewMaterial} placeholder="e.g., Glass"
-      />
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+      
+      {/* CATEGORIES CARD */}
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 flex flex-col h-full">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-3 bg-[#D0F1D8]/50 rounded-xl text-[#3A7045]">
+            <Layers className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Product Categories</h2>
+            <p className="text-sm text-gray-500">Organize your shop navigation</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleAddCategory} className="flex gap-2 mb-8">
+          <input 
+            type="text" 
+            placeholder="Add new category..." 
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            className="flex-grow border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#6F9B69] transition-colors"
+          />
+          <button 
+            type="submit" 
+            disabled={!newCategory.trim()}
+            className="bg-[#6F9B69] text-white px-5 rounded-xl font-semibold hover:bg-[#5b8256] disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
+          >
+            <Plus className="w-5 h-5" /> Add
+          </button>
+        </form>
+
+        <div className="flex flex-wrap gap-3">
+          {settings.categories.map((category) => (
+            <div key={category} className="flex items-center gap-2 bg-gray-50 border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm animate-fade-in">
+              {category}
+              <button 
+                onClick={() => handleRemoveCategory(category)} 
+                className="text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full p-0.5 transition-colors"
+                title="Remove Category"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+          {settings.categories.length === 0 && (
+            <p className="text-gray-400 text-sm italic w-full text-center py-4">No categories added yet.</p>
+          )}
+        </div>
+      </div>
+
+      {/* MATERIALS CARD */}
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 flex flex-col h-full">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-3 bg-[#D0F1D8]/50 rounded-xl text-[#3A7045]">
+            <Tag className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Product Materials</h2>
+            <p className="text-sm text-gray-500">Manage sustainable materials list</p>
+          </div>
+        </div>
+
+        <form onSubmit={handleAddMaterial} className="flex gap-2 mb-8">
+          <input 
+            type="text" 
+            placeholder="Add new material..." 
+            value={newMaterial}
+            onChange={(e) => setNewMaterial(e.target.value)}
+            className="flex-grow border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#6F9B69] transition-colors"
+          />
+          <button 
+            type="submit" 
+            disabled={!newMaterial.trim()}
+            className="bg-[#6F9B69] text-white px-5 rounded-xl font-semibold hover:bg-[#5b8256] disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
+          >
+            <Plus className="w-5 h-5" /> Add
+          </button>
+        </form>
+
+        <div className="flex flex-wrap gap-3">
+          {settings.materials.map((material) => (
+            <div key={material} className="flex items-center gap-2 bg-gray-50 border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-semibold shadow-sm animate-fade-in">
+              {material}
+              <button 
+                onClick={() => handleRemoveMaterial(material)} 
+                className="text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full p-0.5 transition-colors"
+                title="Remove Material"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+          {settings.materials.length === 0 && (
+            <p className="text-gray-400 text-sm italic w-full text-center py-4">No materials added yet.</p>
+          )}
+        </div>
+      </div>
+
     </div>
   );
 }

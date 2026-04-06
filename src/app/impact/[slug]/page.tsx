@@ -1,8 +1,9 @@
-// src/app/blog/[slug]/page.tsx
-// REMOVE "use client" - This is a Server Component!
+// src/app/impact/[slug]/page.tsx
+"use client"; // <-- Switched to client component
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -11,15 +12,30 @@ import BlogDetailHero from '@/components/blog/detail/BlogDetailHero';
 import BlogDetailBody from '@/components/blog/detail/BlogDetailBody';
 import RelatedArticles from '@/components/blog/detail/RelatedArticle';
 
-import { getBlogPostBySlug, getRelatedPosts } from '@/data/blogData';
+import { getBlogPostBySlug, getRelatedPosts, BlogPost } from '@/data/blogData';
 
-// In Next.js Server Components, params are passed as a prop
-export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
-  const slug = params.slug;
+export default function BlogDetailPage() {
+  const params = useParams();
+  const slug = params.slug as string;
 
-  // Await the fetch functions!
-  const post = await getBlogPostBySlug(slug);
-  const relatedPosts = await getRelatedPosts(slug);
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const fetchedPost = await getBlogPostBySlug(slug);
+      const fetchedRelated = await getRelatedPosts(slug);
+      setPost(fetchedPost);
+      setRelatedPosts(fetchedRelated);
+      setLoading(false);
+    };
+    if (slug) fetchData();
+  }, [slug]);
+
+  if (loading) {
+    return <div className="min-h-screen bg-[#FDFCF8] flex items-center justify-center text-[#2E473D] font-bold text-xl">Loading Article...</div>;
+  }
 
   if (!post) {
     return (
@@ -42,19 +58,13 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
 
       <div className="flex-grow pt-36 pb-16 px-4 md:px-10 lg:px-16 flex flex-col items-center">
         <div className="max-w-[1200px] w-full">
-          
           <BlogDetailHeader 
-            category={post.category} 
-            title={post.title} 
-            authorName={post.authorName} 
-            authorImage={post.authorImage} 
-            date={post.date} 
-            readTime={post.readTime} 
+            category={post.category} title={post.title} authorName={post.authorName} 
+            authorImage={post.authorImage} date={post.date} readTime={post.readTime} 
           />
           <BlogDetailHero image={post.heroImage} title={post.title} />
           <BlogDetailBody sections={post.sections} />
           <RelatedArticles articles={relatedPosts} />
-
         </div>
       </div>
       <Footer />

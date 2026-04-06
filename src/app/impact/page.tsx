@@ -1,26 +1,30 @@
 // src/app/impact/page.tsx
+"use client"; // <-- Switched back to client component for Firebase JS SDK
 
-// CRITICAL: No "use client" here! This must be a Server Component to securely use your .env variables.
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import BlogHero from '@/components/blog/BlogHero';
 import CategoryFilterBar from '@/components/blog/CategoryFilterBar';
-
-// Import your newly updated, modular BlogSection!
 import BlogSection from '@/components/blog/BlogSection';
 
-// Import the async fetcher function
-import { getLinkedInPosts } from '@/data/blogData';
+import { getBlogPosts, BlogPost } from '@/data/blogData';
 
-export default async function BlogPage() {
-  // Securely fetch the posts on the server side
-  const linkedInPosts = await getLinkedInPosts();
+export default function BlogPage() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFirebasePosts = async () => {
+      const data = await getBlogPosts();
+      setPosts(data);
+      setLoading(false);
+    };
+    fetchFirebasePosts();
+  }, []);
 
   return (
     <main className="relative w-full bg-[#FDFCF8] min-h-screen flex flex-col">
-      
       <div className="absolute top-0 w-full z-50">
         <Navbar invert={false} />
       </div>
@@ -28,11 +32,15 @@ export default async function BlogPage() {
       <BlogHero />
       <CategoryFilterBar />
 
-      {/* Pass the securely fetched data directly into your modular component */}
-      <BlogSection posts={linkedInPosts} />
+      {loading ? (
+        <div className="w-full py-32 flex justify-center text-[#2E473D] text-xl font-bold">
+          Loading Articles...
+        </div>
+      ) : (
+        <BlogSection posts={posts} />
+      )}
 
       <Footer />
-      
     </main>
   );
 }

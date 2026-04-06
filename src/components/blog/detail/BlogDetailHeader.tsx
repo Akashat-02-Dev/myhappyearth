@@ -1,3 +1,4 @@
+// src/components/blog/detail/BlogDetailHeader.tsx
 import React from 'react';
 import Image from 'next/image';
 import { Facebook, Youtube, Instagram, Linkedin, Link2, Copy } from 'lucide-react';
@@ -11,6 +12,16 @@ interface HeaderProps {
   readTime: string;
 }
 
+const getSafeImageSrc = (src: string | undefined | null, fallback: string) => {
+  if (!src || typeof src !== 'string' || src.trim() === '') return fallback;
+  const cleanSrc = src.trim();
+  if (cleanSrc.startsWith('/')) return cleanSrc;
+  if (cleanSrc.startsWith('http://') || cleanSrc.startsWith('https://')) {
+    try { new URL(cleanSrc); return cleanSrc; } catch (e) { return fallback; }
+  }
+  return fallback;
+};
+
 export default function BlogDetailHeader({ category, title, authorName, authorImage, date, readTime }: HeaderProps) {
   const shareLinks = [
     { icon: Facebook, color: 'text-[#3A808C]' },
@@ -20,6 +31,8 @@ export default function BlogDetailHeader({ category, title, authorName, authorIm
     { icon: Link2, color: 'text-[#9CA3AF]' },
     { icon: Copy, color: 'text-[#9CA3AF]' },
   ];
+
+  const safeAuthorImage = getSafeImageSrc(authorImage, '/images/hero-woman.jpeg');
 
   return (
     <div className="flex flex-col gap-6 mb-10">
@@ -31,9 +44,8 @@ export default function BlogDetailHeader({ category, title, authorName, authorIm
       </h1>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
         <div className="flex items-center gap-4">
-          {/* Fallback image logic if authorImage doesn't exist yet */}
           <div className="w-14 h-14 rounded-full border border-gray-100 overflow-hidden relative bg-gray-200">
-             <Image src={authorImage || '/images/placeholder.jpg'} alt={authorName} fill className="object-cover" />
+             <Image src={safeAuthorImage} alt={authorName || "Author"} fill className="object-cover" />
           </div>
           <div className="flex flex-col gap-1 font-sans">
             <p className="text-sm">
