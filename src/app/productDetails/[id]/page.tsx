@@ -15,21 +15,21 @@ import Footer from '@/components/Footer';
 
 export default function DynamicProductPage() {
   const params = useParams();
-  const productId = Number(params.id);
+  
+  // THE FIX 1: Do not cast to Number. Firebase IDs can be alphanumeric strings.
+  // We ensure it's treated as a string to perfectly match the database ID.
+  const productId = Array.isArray(params.id) ? params.id[0] : params.id;
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
   // Fetch the product from local storage/shopData on mount to avoid hydration mismatches
-useEffect(() => {
-    // 1. Create an async helper function inside the useEffect
+  useEffect(() => {
     const fetchProductData = async () => {
       try {
-        // 2. Await the database call so it returns the actual array of products
         const allProducts = await getProducts();
         
-        // 3. Convert both IDs to strings to ensure they match (Firebase IDs are strings)
         const foundProduct = allProducts.find((p: Product) => String(p.id) === String(productId));
         
         if (foundProduct) {
@@ -37,15 +37,23 @@ useEffect(() => {
         }
       } catch (error) {
         console.error("Error fetching product details:", error);
+      } finally {
+        // THE FIX 2: Tell React to stop showing the loading screen whether it succeeded or failed!
+        setLoading(false); 
       }
     };
 
-    // 4. Call the async function
-    fetchProductData();
+    if (productId) {
+      fetchProductData();
+    }
   }, [productId]);
 
   if (loading) {
-    return <div className="min-h-screen bg-earth-light flex items-center justify-center text-earth-green font-bold text-xl">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-earth-light flex items-center justify-center text-earth-green font-bold text-xl">
+        Loading...
+      </div>
+    );
   }
 
   if (!product) {
@@ -84,7 +92,7 @@ useEffect(() => {
     ],
     sustainableAttributes: [
       { text: product.material, label: 'MATERIAL' },
-      { text: product.badge, label: 'CERTIFIED' },
+      { text: product.badge || 'N/A', label: 'CERTIFIED' }, // Added fallback for optional badge
       { text: 'Eco-Friendly', label: 'SUSTAINABLE' },
       { text: product.category, label: 'CATEGORY' },
     ],
@@ -94,7 +102,6 @@ useEffect(() => {
     <main className="min-h-screen bg-earth-light text-earth-dark font-sans flex flex-col">
       {/* <Navbar /> */}
       
-
       <div className="flex-grow container mx-auto px-4 md:px-8 py-10 pt-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
           
