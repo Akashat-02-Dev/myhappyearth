@@ -22,14 +22,26 @@ export default function DynamicProductPage() {
   const [quantity, setQuantity] = useState(1);
 
   // Fetch the product from local storage/shopData on mount to avoid hydration mismatches
-  useEffect(() => {
-    const allProducts = getProducts();
-    const foundProduct = allProducts.find((p: Product) => p.id === productId);
-    
-    if (foundProduct) {
-      setProduct(foundProduct);
-    }
-    setLoading(false);
+useEffect(() => {
+    // 1. Create an async helper function inside the useEffect
+    const fetchProductData = async () => {
+      try {
+        // 2. Await the database call so it returns the actual array of products
+        const allProducts = await getProducts();
+        
+        // 3. Convert both IDs to strings to ensure they match (Firebase IDs are strings)
+        const foundProduct = allProducts.find((p: Product) => String(p.id) === String(productId));
+        
+        if (foundProduct) {
+          setProduct(foundProduct);
+        }
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+      }
+    };
+
+    // 4. Call the async function
+    fetchProductData();
   }, [productId]);
 
   if (loading) {
