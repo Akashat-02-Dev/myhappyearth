@@ -61,4 +61,4 @@ export default function AdminDashboard({ onLogout }: { onLogout: () => void }) {
       </div>
     </div>
   );
-}
+}   

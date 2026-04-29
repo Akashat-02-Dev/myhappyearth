@@ -2,6 +2,20 @@ import type { NextConfig } from 'next';
 
 // Build the config without strictly attaching it to NextConfig right away
 const config = {
+  // NEW: Allows external image URLs (like Unsplash, Shopify, etc.) to load in the Next.js <Image> component
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: '**',
+      },
+    ],
+  },
+
   // 1. Silences the specific Turbopack warning in your terminal
   turbopack: {},
 

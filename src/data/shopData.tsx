@@ -1,7 +1,9 @@
 // src/data/shopData.tsx
+import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export interface Product {
-  id: number;
+  id?: string; // Firebase IDs are strings
   name: string;
   description: string;
   price: string;
@@ -10,40 +12,48 @@ export interface Product {
   badge: string;
   category: string;
   material: string;
-  stock: number;
+  stock?: number | ''; // Made optional
 }
 
-// Default Data Arrays
-export const initialProducts: Product[] = [
-  { id: 1, name: "Bamboo Toothbrush", description: "Sustainable oral care", price: "AUD 6.95", rating: 5, imageUrl: "/images/products/toothbrush.jpg", badge: "Bamboo", category: "Personal Care", material: "Bamboo", stock: 150 },
-  { id: 2, name: "Reusable Water Bottle", description: "Hydrate consciously", price: "AUD 34.50", rating: 5, imageUrl: "/images/products/bottle.jpg", badge: "Eco-Glass", category: "Outdoors", material: "Recycled", stock: 85 },
-  { id: 3, name: "Beeswax Food Wraps", description: "Natural food storage", price: "22.90", rating: 4, imageUrl: "/images/products/wraps.jpg", badge: "Reusable", category: "Kitchen", material: "Organic Cotton", stock: 200 },
-];
+const COLLECTION_NAME = "products";
 
-export const initialCategories = ['Home & Living', 'Kitchen', 'Personal Care', 'Health', 'Office', 'Outdoors', 'Kids'];
-export const initialMaterials = ['Bamboo', 'Recycled', 'Organic Cotton', 'Natural'];
-
-// Helper Functions for Local Storage Management
-const getFromStorage = <T,>(key: string, initialData: T): T => {
-  if (typeof window !== "undefined") {
-    const saved = localStorage.getItem(key);
-    if (saved) return JSON.parse(saved);
+// Fetch all products from Firebase
+export async function getProducts(): Promise<Product[]> {
+  try {
+    const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+  } catch (error) {
+    console.error("Error fetching products from Firebase:", error);
+    return [];
   }
-  return initialData;
-};
+}
 
-const saveToStorage = <T,>(key: string, data: T) => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(key, JSON.stringify(data));
+export async function addProduct(product: Omit<Product, 'id'>) {
+  try {
+    const docRef = await addDoc(collection(db, COLLECTION_NAME), product);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding product:", error);
+    throw error;
   }
-};
+}
 
-// Expose Getters and Setters
-export const getProducts = () => getFromStorage("shop_products", initialProducts);
-export const saveProducts = (data: Product[]) => saveToStorage("shop_products", data);
+export async function updateProduct(id: string, updatedProduct: Partial<Product>) {
+  try {
+    const docRef = doc(db, COLLECTION_NAME, id);
+    await updateDoc(docRef, updatedProduct);
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+}
 
-export const getCategories = () => getFromStorage("shop_categories", initialCategories);
-export const saveCategories = (data: string[]) => saveToStorage("shop_categories", data);
-
-export const getMaterials = () => getFromStorage("shop_materials", initialMaterials);
-export const saveMaterials = (data: string[]) => saveToStorage("shop_materials", data);
+export async function deleteProduct(id: string) {
+  try {
+    const docRef = doc(db, COLLECTION_NAME, id);
+    await deleteDoc(docRef);
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    throw error;
+  }
+}

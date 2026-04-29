@@ -16,6 +16,8 @@ export default function BlogTab() {
     readTime: '3 min read', content: '' // We will parse content into paragraphs on submit
   });
 
+  const [isSaving, setIsSaving] = useState(false);
+
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -50,6 +52,7 @@ export default function BlogTab() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
     
     // Parse the raw text area into the structured sections array your UI expects
     const paragraphs = formData.content.split('\n').filter(p => p.trim() !== '');
@@ -66,14 +69,19 @@ export default function BlogTab() {
       sections: [{ heading: "Article Content", paragraphs: paragraphs }]
     };
 
-    if (editingPost && editingPost.id) {
-      await updateBlogPost(editingPost.id, postData);
-    } else {
-      await addBlogPost(postData);
+    try {
+      if (editingPost && editingPost.id) {
+        await updateBlogPost(editingPost.id, postData);
+      } else {
+        await addBlogPost(postData);
+      }
+      await fetchPosts();
+      setIsModalOpen(false);
+    } catch (error) {
+      alert("Failed to save blog post.");
+    } finally {
+      setIsSaving(false);
     }
-    
-    setIsModalOpen(false);
-    fetchPosts();
   };
 
   return (
@@ -89,7 +97,7 @@ export default function BlogTab() {
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="bg-gray-50 text-gray-500 border-b border-gray-100">
-              <th className="p-5 font-semibold">Article Title</th>
+              <th className="p-5 font-semibold">Article Info</th>
               <th className="p-5 font-semibold">Category</th>
               <th className="p-5 font-semibold">Date</th>
               <th className="p-5 font-semibold text-right">Actions</th>
@@ -98,15 +106,33 @@ export default function BlogTab() {
           <tbody>
             {posts.map((post) => (
               <tr key={post.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                <td className="p-5 font-bold text-gray-900">{post.title}</td>
+                <td className="p-5 flex items-center gap-4">
+                  {/* Added Image Display with safe fallback rendering */}
+                  <div className="w-16 h-12 rounded-lg bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200">
+                     <img 
+                       src={post.heroImage || '/images/blog/beach-sunset.jpg'} 
+                       alt={post.title} 
+                       className="w-full h-full object-cover" 
+                       onError={(e) => (e.currentTarget.src = '/images/blog/beach-sunset.jpg')} 
+                     />
+                  </div>
+                  <div className="font-bold text-gray-900 max-w-[250px] truncate">{post.title}</div>
+                </td>
                 <td className="p-5"><span className="bg-[#D0F1D8] text-[#3A7045] px-3 py-1 rounded-lg text-xs font-bold">{post.category}</span></td>
                 <td className="p-5 text-gray-500">{post.date}</td>
-                <td className="p-5 text-right flex justify-end gap-2">
-                  <button onClick={() => openModal(post)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"><Edit2 className="w-5 h-5" /></button>
-                  <button onClick={() => handleDelete(post.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"><Trash2 className="w-5 h-5" /></button>
+                <td className="p-5 text-right">
+                  <div className="flex justify-end gap-2">
+                    <button onClick={() => openModal(post)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"><Edit2 className="w-5 h-5" /></button>
+                    <button onClick={() => handleDelete(post.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"><Trash2 className="w-5 h-5" /></button>
+                  </div>
                 </td>
               </tr>
             ))}
+            {posts.length === 0 && (
+              <tr>
+                <td colSpan={4} className="p-8 text-center text-gray-400 italic">No blog posts found. Click "Write New Post" to create one.</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -135,7 +161,8 @@ export default function BlogTab() {
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Hero Image URL</label>
-                <input required type="text" value={formData.heroImage} onChange={e => setFormData({...formData, heroImage: e.target.value})} className="w-full border rounded-xl px-4 py-3 outline-none focus:border-[#6F9B69]" placeholder="/images/blog/your-image.jpg" />
+                {/* Kept as type="text" so you can use BOTH local paths (e.g., /images/blog/img.jpg) AND external URLs (e.g., https://unsplash.com/...) */}
+                <input required type="text" value={formData.heroImage} onChange={e => setFormData({...formData, heroImage: e.target.value})} className="w-full border rounded-xl px-4 py-3 outline-none focus:border-[#6F9B69]" placeholder="https://example.com/image.jpg or /images/blog/your-image.jpg" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Article Content (Double enter for new paragraphs)</label>
@@ -144,7 +171,9 @@ export default function BlogTab() {
               
               <div className="md:col-span-2 flex justify-end gap-3 mt-2">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 rounded-xl font-semibold text-gray-600 hover:bg-gray-100 transition">Cancel</button>
-                <button type="submit" className="px-6 py-3 rounded-xl font-semibold text-white bg-[#6F9B69] hover:bg-[#5b8256] transition shadow-md">Publish Post</button>
+                <button type="submit" disabled={isSaving} className="px-6 py-3 rounded-xl font-semibold text-white bg-[#6F9B69] hover:bg-[#5b8256] transition shadow-md disabled:opacity-70">
+                  {isSaving ? 'Publishing...' : 'Publish Post'}
+                </button>
               </div>
             </form>
           </div>

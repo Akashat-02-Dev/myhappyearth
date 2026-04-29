@@ -1,3 +1,4 @@
+// src/components/Navbar.tsx
 "use client";
 
 import Link from "next/link";
@@ -42,10 +43,10 @@ export default function Navbar({
             : "bg-transparent text-earth-light shadow-none"
       }`}
     >
-      {/* Logo Section */}
+      {/* Logo Section - Fixed width to balance the spacer on the right */}
       <Link
         href="/"
-        className={`flex items-center gap-2 font-bold text-xl cursor-pointer transition-colors duration-500 ${
+        className={`flex items-center gap-2 font-bold text-xl cursor-pointer transition-colors duration-500 w-24 flex-shrink-0 ${
           invert && !activeScrolled ? "text-earth-deep" : ""
         }`}
       >
@@ -58,7 +59,7 @@ export default function Navbar({
         />
       </Link>
 
-      {/* Navigation Links */}
+      {/* Navigation Links & CTA */}
       <div className="hidden md:flex gap-8 font-medium items-center">
         {/* DYNAMIC ROUTING LOGIC */}
         {pathname !== "/" && (
@@ -94,7 +95,6 @@ export default function Navbar({
 
         {/* Contact Us - Dropdown Container */}
         <div className="relative group">
-          {/* THE FIX: Updated to point to the form view */}
           <Link
             href="/contact?view=form"
             className="hover:text-earth-sage transition-colors duration-300 py-4"
@@ -112,7 +112,6 @@ export default function Navbar({
                     : "bg-white/10 backdrop-blur-md border-white/20"
               }`}
             >
-              {/* THE FIX: Updated to point to the faq view */}
               <Link
                 href="/contact?view=faq"
                 className={`px-5 py-3 text-sm font-semibold text-center transition-colors duration-300 ${
@@ -128,23 +127,25 @@ export default function Navbar({
             </div>
           </div>
         </div>
+
+        {/* CTA Button - MOVED HERE */}
+        <Link href="/enquiry">
+          <button
+            className={`px-6 py-2 rounded-full font-semibold transition-all duration-500 shadow-md hover:scale-105 ${
+              activeScrolled
+                ? "bg-earth-light text-earth-deep hover:bg-white"
+                : invert
+                  ? "bg-earth-deep text-earth-light hover:bg-earth-forest"
+                  : "bg-earth-light text-earth-deep hover:bg-white"
+            }`}
+          >
+            Enquiry
+          </button>
+        </Link>
       </div>
 
-      {/* CTA Button */}
-      <Link
-        href="/enquiry">
-          <button
-        className={`px-6 py-2 rounded-full font-semibold transition-all duration-500 shadow-md hover:scale-105 ${
-          activeScrolled
-            ? "bg-earth-light text-earth-deep hover:bg-white"
-            : invert
-              ? "bg-earth-deep text-earth-light hover:bg-earth-forest"
-              : "bg-earth-light text-earth-deep hover:bg-white"
-        }`}
-      >
-        Enquiry
-      </button>
-        </Link>
+      {/* Invisible Spacer - Replaces the button to keep the justify-between perfectly centered */}
+      <div className="hidden md:block w-24"></div>
     </nav>
   );
 }

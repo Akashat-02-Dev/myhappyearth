@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, FC, JSX } from 'react';
+import { FC, JSX } from 'react';
 
 interface Metric {
   id: number;
@@ -53,109 +53,44 @@ const metricsData: Metric[] = [
 ];
 
 const ImpactMetrics: FC = () => {
-  // Triple the data array to allow for seamless infinite sliding left and right
-  const extendedMetrics = [...metricsData, ...metricsData, ...metricsData];
-  
-  // Start at index 4 (the beginning of the middle set) to allow sliding in both directions
-  const [currentIndex, setCurrentIndex] = useState(4);
-  const [isTransitioning, setIsTransitioning] = useState(true);
-
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const directionRef = useRef<'left' | 'right' | null>(null);
-
-  const nextSlide = () => {
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => prev + 1);
-  };
-
-  const prevSlide = () => {
-    setIsTransitioning(true);
-    setCurrentIndex((prev) => prev - 1);
-  };
-
-  // Handle the seamless infinite snapping
-  useEffect(() => {
-    const transitionDuration = 500; // Matches Tailwind's duration-500
-
-    // If we slide far enough right (index 9 looks identical to index 5)
-    if (currentIndex === 9) {
-      const timeout = setTimeout(() => {
-        setIsTransitioning(false); // Turn off animation
-        setCurrentIndex(5); // Instantly snap back to the middle
-      }, transitionDuration);
-      return () => clearTimeout(timeout);
-    }
-
-    // If we slide far enough left (index 0 looks identical to index 4)
-    if (currentIndex === 0) {
-      const timeout = setTimeout(() => {
-        setIsTransitioning(false); // Turn off animation
-        setCurrentIndex(4); // Instantly snap back to the middle
-      }, transitionDuration);
-      return () => clearTimeout(timeout);
-    }
-  }, [currentIndex]);
-
-  const startScrolling = (direction: 'left' | 'right') => {
-    if (directionRef.current === direction) return;
-    directionRef.current = direction;
-
-    // Slide immediately on initial hover
-    if (direction === 'right') nextSlide();
-    else prevSlide();
-
-    // Set an interval to keep sliding exactly 1 item every 1.5 seconds while hovering
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    intervalRef.current = setInterval(() => {
-      if (direction === 'right') nextSlide();
-      else prevSlide();
-    }, 1500);
-  };
-
-  const stopScrolling = () => {
-    directionRef.current = null;
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { left, width } = e.currentTarget.getBoundingClientRect();
-    const mouseX = e.clientX - left;
-    const threshold = width / 2;
-
-    if (mouseX > threshold) {
-      startScrolling('right');
-    } else {
-      startScrolling('left');
-    }
-  };
+  // We only need to double the array once for a CSS marquee to loop perfectly
+  const extendedMetrics = [...metricsData, ...metricsData];
 
   return (
-    <section
-      className="w-full bg-[#588157] text-[#FAF3DD] py-12 overflow-hidden flex items-center border-y border-[#FAF3DD]/10"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={stopScrolling}
-    >
-      {/* The track translates left or right based on the currentIndex.
-        We translate by exactly 33.333% because exactly 3 items fit on the screen.
+    <section className="w-full bg-[#588157] text-[#FAF3DD] py-12 overflow-hidden flex items-center border-y border-[#FAF3DD]/10">
+      
+      {/* Injecting custom CSS styles for the smooth marquee effect. 
+        It shifts the entire container exactly 50% to the left, which perfectly aligns 
+        the duplicate set with the original set before instantly looping back to 0. 
       */}
-      <div
-        className={`flex w-full ${isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
-        style={{ transform: `translateX(-${currentIndex * 33.333333}%)` }}
-      >
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          display: flex;
+          width: max-content;
+          animation: marquee 25s linear infinite; /* Adjust 25s to change speed */
+        }
+        /* Pauses the animation so users can read the text when hovering */
+        .animate-marquee:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
+
+      <div className="animate-marquee">
         {extendedMetrics.map((metric, index) => (
           <div
             key={index}
-            // Strict w-1/3 ensures exactly 3 items are always visible
-            className="w-1/3 flex-shrink-0 flex items-center justify-center gap-2 md:gap-4 px-2 md:px-8 hover:cursor-default"
+            // Use vw units to ensure the items are exactly 1 screen wide on mobile, 
+            // and exactly 1/3 of the screen wide on desktop to match your original layout
+            className="w-[100vw] md:w-[33.333vw] flex-shrink-0 flex items-center justify-center gap-2 md:gap-4 px-2 md:px-8 cursor-default"
           >
             <div className="opacity-90 flex items-center justify-center">
               {metric.icon}
             </div>
             
-            {/* Flex column on small screens so the text doesn't overflow the 1/3 boundary */}
             <div className="flex flex-col xl:flex-row xl:items-baseline gap-1 xl:gap-2 text-center xl:text-left">
               <span className="font-sans font-extrabold text-xl md:text-3xl lg:text-4xl tracking-tight">
                 {metric.number}
@@ -164,7 +99,6 @@ const ImpactMetrics: FC = () => {
                 {metric.label}
               </span>
             </div>
-
           </div>
         ))}
       </div>
