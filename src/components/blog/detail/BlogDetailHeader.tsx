@@ -10,6 +10,7 @@ interface HeaderProps {
   authorImage: string;
   date: string;
   readTime: string;
+  linkedinLink?: string;
 }
 
 const getSafeImageSrc = (src: string | undefined | null, fallback: string) => {
@@ -22,14 +23,15 @@ const getSafeImageSrc = (src: string | undefined | null, fallback: string) => {
   return fallback;
 };
 
-export default function BlogDetailHeader({ category, title, authorName, authorImage, date, readTime }: HeaderProps) {
-  const shareLinks = [
-    { icon: Facebook, color: 'text-[#3A808C]' },
-    { icon: Youtube, color: 'text-[#3A808C]' },
-    { icon: Instagram, color: 'text-[#3A808C]' },
-    { icon: Linkedin, color: 'text-[#3A808C]' },
-    { icon: Link2, color: 'text-[#9CA3AF]' },
-    { icon: Copy, color: 'text-[#9CA3AF]' },
+export default function BlogDetailHeader({ category, title, authorName, authorImage, date, readTime, linkedinLink }: HeaderProps) {
+  
+  // THE FIX: Explicitly tell TypeScript what this array holds so it doesn't default to 'any[]'
+  const shareLinks: Array<{ icon: React.ElementType; color: string }> = [
+    // { icon: Facebook, color: 'text-[#3A808C]' },
+    // { icon: Youtube, color: 'text-[#3A808C]' },
+    // { icon: Instagram, color: 'text-[#3A808C]' },
+    // { icon: Link2, color: 'text-[#9CA3AF]' },
+    // { icon: Copy, color: 'text-[#9CA3AF]' },
   ];
 
   const safeAuthorImage = getSafeImageSrc(authorImage, '/images/hero-woman.jpeg');
@@ -60,6 +62,18 @@ export default function BlogDetailHeader({ category, title, authorName, authorIm
               <share.icon className="w-6 h-6" strokeWidth={1.5} />
             </button>
           ))}
+          
+          {linkedinLink && (
+            <a 
+              href={linkedinLink} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-[#3A808C] hover:opacity-80 transition-opacity cursor-pointer"
+              title="View Original Inspiration on LinkedIn"
+            >
+              <Linkedin className="w-6 h-6" strokeWidth={1.5} />
+            </a>
+          )}
         </div>
       </div>
     </div>

@@ -10,10 +10,10 @@ export default function BlogTab() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingPost, setEditingProduct] = useState<BlogPost | null>(null);
   
-  // Flattened form state for easier editing
+  // Flattened form state for easier editing - Added linkedinLink here
   const [formData, setFormData] = useState({
     title: '', category: 'News', heroImage: '', authorName: 'My Happy Earth', 
-    readTime: '3 min read', content: '' // We will parse content into paragraphs on submit
+    readTime: '3 min read', content: '', linkedinLink: '' 
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -42,10 +42,11 @@ export default function BlogTab() {
       const rawContent = post.sections.map(s => s.paragraphs.join('\n\n')).join('\n\n');
       setFormData({
         title: post.title, category: post.category, heroImage: post.heroImage,
-        authorName: post.authorName, readTime: post.readTime, content: rawContent
+        authorName: post.authorName, readTime: post.readTime, content: rawContent,
+        linkedinLink: post.linkedinLink || '' // Load existing link if present
       });
     } else {
-      setFormData({ title: '', category: 'News', heroImage: '', authorName: 'My Happy Earth', readTime: '3 min read', content: '' });
+      setFormData({ title: '', category: 'News', heroImage: '', authorName: 'My Happy Earth', readTime: '3 min read', content: '', linkedinLink: '' });
     }
     setIsModalOpen(true);
   };
@@ -66,6 +67,7 @@ export default function BlogTab() {
       authorImage: '/images/authors/sarah.jpg',
       date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
       readTime: formData.readTime,
+      linkedinLink: formData.linkedinLink, // Save the link to Firebase
       sections: [{ heading: "Article Content", paragraphs: paragraphs }]
     };
 
@@ -159,6 +161,13 @@ export default function BlogTab() {
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Read Time (e.g., '4 min read')</label>
                 <input required type="text" value={formData.readTime} onChange={e => setFormData({...formData, readTime: e.target.value})} className="w-full border rounded-xl px-4 py-3 outline-none focus:border-[#6F9B69]" />
               </div>
+
+              {/* NEW ADDITION: LinkedIn Source URL input field */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Source / LinkedIn Inspiration Link (Optional)</label>
+                <input type="url" value={formData.linkedinLink} onChange={e => setFormData({...formData, linkedinLink: e.target.value})} className="w-full border rounded-xl px-4 py-3 outline-none focus:border-[#6F9B69]" placeholder="https://www.linkedin.com/in/..." />
+              </div>
+
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Hero Image URL</label>
                 {/* Kept as type="text" so you can use BOTH local paths (e.g., /images/blog/img.jpg) AND external URLs (e.g., https://unsplash.com/...) */}

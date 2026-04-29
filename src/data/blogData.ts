@@ -16,6 +16,7 @@ export interface BlogPost {
   heroImage: string;
   authorName: string;
   authorImage: string;
+  linkedinLink?: string;
   date: string;
   readTime: string;
   sections: BlogSection[];
