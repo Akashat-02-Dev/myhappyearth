@@ -20,7 +20,7 @@ export default function MissionVision() {
             Our Mission
           </h2>
           <p className="text-lg md:text-xl leading-relaxed drop-shadow-md font-medium text-white/95">
-            To empower individuals and communities to embrace zero-waste lifestyles through accessible, eco-friendly Australian products.
+            We started My Happy Earth because we couldn't stand by and watch — the plastic, the waste, the things we knew were wrong. Every product we curate is our answer to that frustration: a way to live better, buy better, and refuse to contribute to the harm. You're not just shopping here. You're choosing a side.
           </p>
         </div>
       </div>
@@ -38,7 +38,7 @@ export default function MissionVision() {
             Our Vision
           </h2>
           <p className="text-lg md:text-xl leading-relaxed drop-shadow-md font-medium text-white/95">
-            A future where humanity and nature thrive in harmony, sustained by mindful consumption and ecological balance.
+            A world where nobody has to choose between doing right and doing well — where sustainable is the default, not the sacrifice. Where our grandchildren grow up on a planet with forests standing, oceans breathing, and communities thriving. We're building that world, one order at a time.
           </p>
         </div>
       </div>
