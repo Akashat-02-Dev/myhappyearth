@@ -21,7 +21,8 @@ const config = {
 
   // 2. Tells the new Turbopack engine how to load SVGs
   experimental: {
-    turbo: {
+    turbo: true,
+    turbopack: {
       rules: {
         '*.svg': {
           loaders: ['@svgr/webpack'],

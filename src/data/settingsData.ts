@@ -42,4 +42,4 @@ export async function saveShopSettings(settings: ShopSettings): Promise<void> {
     console.error("Error saving settings:", error);
     throw error;
   }
-}
+}   

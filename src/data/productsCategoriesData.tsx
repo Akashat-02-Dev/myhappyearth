@@ -1,10 +1,10 @@
 export const productsCategories = [
-  "Home & Living",
-  "Kitchen",
-  "Personal Care",
-  "Health & Wellness",
-  "Office",
-  "Outdoors & Travel",
-  "Kids & Family",
-  "Business & Corporate",
+  "Sustainable Bags",
+  "Compostable Products",
+  "Biodegradable Products",
+  "Table Products",
+  "Natura Dine",
+  "Zero Waste",
+  "EcoServe",
+  "Recycled Plastic",
 ];

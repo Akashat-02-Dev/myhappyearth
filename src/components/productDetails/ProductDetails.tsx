@@ -33,3 +33,5 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ data, quantity, setQuan
 };
 
 export default ProductDetails;
+
+// The above code defines a ProductDetails component that composes several subcomponents to display detailed information about a product. It receives product data and quantity state as props, and passes relevant information down to the ProductHeader, SustainableAttributes, ProductActions, and SustainableProof components. The ProductActions component now also receives the product name to ensure it can display accurate information when adding items to the cart.

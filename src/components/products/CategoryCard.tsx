@@ -6,11 +6,10 @@ interface CategoryCardProps {
 }
 
 export default function CategoryCard({ title }: CategoryCardProps) {
-  // CRITICAL FIX: Defensive check. 
-  // If title is undefined or empty, return null so the page doesn't crash!
+  // Defensive check to prevent crashes if data is missing
   if (!title) return null;
 
-  // We keep the formatting logic to ensure the correct image is loaded from your public folder
+  // Formatting logic for local image files
   // Example: "Home & Living" -> "home-and-living"
   const imageLink = title
     .toLowerCase()
@@ -19,7 +18,8 @@ export default function CategoryCard({ title }: CategoryCardProps) {
 
   return (
     <Link 
-      href="/products/shop" // <-- UPDATE: Now strictly redirects to the shop grid
+      // THE FIX: Redirects to the shop page and passes the category title as a query parameter
+      href={`/products/shop?category=${encodeURIComponent(title)}`} 
       className="relative group w-full aspect-square overflow-hidden rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500"
     >
       
@@ -30,6 +30,8 @@ export default function CategoryCard({ title }: CategoryCardProps) {
         fill
         className="object-cover object-center transform group-hover:scale-110 transition-transform duration-700 ease-in-out"
         sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 25vw"
+        // Recommended: Add a priority tag if these appear above the fold
+        priority={false}
       />
 
       {/* DARK OVERLAY */}
@@ -37,7 +39,7 @@ export default function CategoryCard({ title }: CategoryCardProps) {
 
       {/* TEXT LABEL OVERLAY */}
       <div className="absolute inset-x-0 bottom-0 px-6 pb-6 flex items-center justify-center">
-        <h3 className="font-sans font-bold text-center text-lg md:text-xl lg:text-2xl text-white drop-shadow-lg transform translate-y-0 group-hover:-translate-y-2 transition-transform duration-500">
+        <h3 className="font-sans font-bold text-center text-lg md:text-xl lg:text-2xl text-white drop-shadow-lg transform translate-y-0 group-hover:-translate-y-2 transition-transform duration-500 uppercase tracking-wider">
           {title}
         </h3>
       </div>

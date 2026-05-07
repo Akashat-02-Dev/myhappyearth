@@ -1,23 +1,26 @@
 // src/data/shopData.tsx
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '@/lib/firebase'; 
 
 export interface Product {
-  id?: string; // Firebase IDs are strings
+  id?: string;
   name: string;
   description: string;
   price: string;
   rating: number;
-  imageUrl: string;
+  imageUrl: string; 
+  imageUrls?: string[]; 
   badge: string;
   category: string;
-  material: string;
-  stock?: number | ''; // Made optional
+  material: string; // Kept for legacy database compatibility
+  materials?: string[]; // NEW: Array for multiple materials
+  sizes?: string[]; // NEW: Array for available sizes
+  stock?: number | ''; 
 }
 
 const COLLECTION_NAME = "products";
 
-// Fetch all products from Firebase
 export async function getProducts(): Promise<Product[]> {
   try {
     const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
@@ -56,4 +59,13 @@ export async function deleteProduct(id: string) {
     console.error("Error deleting product:", error);
     throw error;
   }
+}
+
+export async function uploadProductImage(productId: string, index: number, file: File): Promise<string> {
+  const fileExtension = file.name.split('.').pop();
+  const fileName = `products/${productId}/image_${index}_${Date.now()}.${fileExtension}`;
+  const storageRef = ref(storage, fileName);
+  
+  await uploadBytes(storageRef, file);
+  return await getDownloadURL(storageRef);
 }

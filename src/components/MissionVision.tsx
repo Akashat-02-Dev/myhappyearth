@@ -12,8 +12,8 @@ export default function MissionVision() {
         className="relative w-full md:w-1/2 flex items-center justify-center p-12 lg:p-24 bg-cover bg-center min-h-[400px] md:min-h-full rounded-t-3xl md:rounded-t-none md:rounded-l-3xl overflow-hidden"
         style={{ backgroundImage: "url('/mission-bg.jpg')" }}
       >
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black/40 transition-colors duration-500 hover:bg-black/30"></div>
+        {/* Dark overlay for text readability (Increased to 60% opacity) */}
+        <div className="absolute inset-0 bg-black/60 transition-colors duration-500 hover:bg-black/50"></div>
         
         <div className="relative z-10 text-center text-white max-w-md">
           <h2 className="text-4xl md:text-5xl font-sans font-bold mb-6 tracking-wider uppercase drop-shadow-md">
@@ -25,13 +25,13 @@ export default function MissionVision() {
         </div>
       </div>
 
-{/* RIGHT SIDE: OUR VISION */}
+      {/* RIGHT SIDE: OUR VISION */}
       <div 
         className="relative w-full md:w-1/2 flex items-center justify-center p-12 lg:p-24 bg-cover bg-center min-h-[400px] md:min-h-full rounded-b-3xl md:rounded-bl-none md:rounded-tr-3xl overflow-hidden"
         style={{ backgroundImage: "url('/vision-bg.jpg')" }}
       >
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black/20 transition-colors duration-500 hover:bg-black/10"></div>
+        {/* Dark overlay for text readability (Increased to 60% opacity to match) */}
+        <div className="absolute inset-0 bg-black/60 transition-colors duration-500 hover:bg-black/50"></div>
         
         <div className="relative z-10 text-center text-white max-w-md">
           <h2 className="text-4xl md:text-5xl font-sans font-bold mb-6 tracking-wider uppercase drop-shadow-md">

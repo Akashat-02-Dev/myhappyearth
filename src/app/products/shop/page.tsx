@@ -1,7 +1,8 @@
 // src/app/products/shop/page.tsx
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import Header from '@/components/shop/Header';
@@ -10,34 +11,45 @@ import ProductCard from '@/components/shop/ProductCard';
 import { getProducts, Product } from '@/data/shopData';
 import { getShopSettings } from '@/data/settingsData';
 
-const parsePrice = (priceStr: string) => {
-  const match = priceStr.match(/[\d.]+/);
+// Safely parse price, ensuring we don't crash if priceStr is undefined
+const parsePrice = (priceStr: string | undefined) => {
+  if (!priceStr) return 0;
+  const match = priceStr.toString().match(/[\d.]+/);
   return match ? parseFloat(match[0]) : 0;
 };
 
-export default function ShopPage() {
+function ShopContent() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get('category') || 'All';
+
   const [products, setProducts] = useState<Product[]>([]);
   const [dynamicCategories, setDynamicCategories] = useState<string[]>(['All']);
   const [dynamicMaterials, setDynamicMaterials] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortOption, setSortOption] = useState('popular');
   const [maxPrice, setMaxPrice] = useState(200);
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
 
   useEffect(() => {
+    const catFromUrl = searchParams.get('category');
+    if (catFromUrl) {
+      setSelectedCategory(catFromUrl);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     const fetchShopData = async () => {
       setLoading(true);
       try {
-        // Fetch products and settings from Firebase simultaneously
         const [productsData, settingsData] = await Promise.all([
           getProducts(),
           getShopSettings()
         ]);
         
-        setProducts(productsData);
+        setProducts(productsData || []);
         setDynamicCategories(['All', ...(settingsData?.categories || [])]); 
         setDynamicMaterials(settingsData?.materials || []);
       } catch (error) {
@@ -55,7 +67,10 @@ export default function ShopPage() {
 
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      result = result.filter(p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+      result = result.filter(p => 
+        (p.name && p.name.toLowerCase().includes(q)) || 
+        (p.description && p.description.toLowerCase().includes(q))
+      );
     }
 
     if (selectedCategory !== 'All') {
@@ -65,18 +80,29 @@ export default function ShopPage() {
     result = result.filter(p => parsePrice(p.price) <= maxPrice);
 
     if (selectedMaterials.length > 0) {
-      result = result.filter(p => selectedMaterials.includes(p.material));
+      result = result.filter(p => p.material && selectedMaterials.includes(p.material));
     }
 
     switch (sortOption) {
-      case 'price_low': result.sort((a, b) => parsePrice(a.price) - parsePrice(b.price)); break;
-      case 'price_high': result.sort((a, b) => parsePrice(b.price) - parsePrice(a.price)); break;
+      case 'price_low': 
+        result.sort((a, b) => parsePrice(a.price) - parsePrice(b.price)); 
+        break;
+      case 'price_high': 
+        result.sort((a, b) => parsePrice(b.price) - parsePrice(a.price)); 
+        break;
       case 'newest': 
-        // Firebase IDs are strings, so we use localeCompare instead of subtraction
-        result.sort((a, b) => (b.id || "").localeCompare(a.id || "")); 
+        // THE FIX: We safely use .toString() instead of the String() wrapper
+        // to prevent the "Type 'String' has no call signatures" error
+        result.sort((a, b) => {
+          const idA = a.id ? a.id.toString() : "";
+          const idB = b.id ? b.id.toString() : "";
+          return idB.localeCompare(idA);
+        }); 
         break;
       case 'popular':
-      default: result.sort((a, b) => b.rating - a.rating); break;
+      default: 
+        result.sort((a, b) => (b.rating || 0) - (a.rating || 0)); 
+        break;
     }
 
     return result;
@@ -136,5 +162,17 @@ export default function ShopPage() {
       <Footer />
       
     </main>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAF7] text-[#6F9B69] font-bold text-xl">
+        Loading Shop...
+      </div>
+    }>
+      <ShopContent />
+    </Suspense>
   );
 }

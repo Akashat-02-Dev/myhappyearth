@@ -13,17 +13,17 @@ const bgImages = [
 const heroProducts = [
   {
     image: "/products/bamboo-kitchenware.jpg", 
-    title: "Bamboo Essentials",
+    title: "Sustainable Bags",
     color: "#D0DBCF" 
   },
   {
     image: "/products/hydrate-bottles.jpg", 
-    title: "Hydrate Responsibly",
+    title: "Compostable/Biodegradable",
     color: "#D1C9B9" 
   },
   {
     image: "/products/organic-living.jpg", 
-    title: "Organic Living",
+    title: "NaturaDine/EcoServe",
     color: "#E2DCD3"
   }
 ];
