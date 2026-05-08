@@ -4,16 +4,18 @@
 import React, { useState, useEffect } from 'react';
 import { getProducts, addProduct, updateProduct, deleteProduct, uploadProductImage, Product } from '@/data/shopData';
 import { getShopSettings } from '@/data/settingsData';
-import { Edit2, Trash2, Plus, X, Loader2, UploadCloud } from 'lucide-react';
+import { Edit2, Trash2, Plus, X, Loader2, UploadCloud, Search } from 'lucide-react';
 
 const STANDARD_SIZES: string[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', 'One Size'];
 
 export default function ProductsTab() {
-  // Explicitly typed states to prevent 'never' inferences
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [materials, setMaterials] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  
+  // NEW: Search State
+  const [searchQuery, setSearchQuery] = useState<string>('');
   
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -51,7 +53,6 @@ export default function ProductsTab() {
   const openModal = (product: Product | null = null) => {
     setEditingProduct(product);
     
-    // Explicitly typed fallbacks to prevent 'never' type errors
     const initialMaterials: string[] = product?.materials || (product?.material ? [product.material] : []);
     const initialSizes: string[] = product?.sizes || [];
 
@@ -86,7 +87,6 @@ export default function ProductsTab() {
     setImagePreviews(newPreviews);
   };
 
-  // THE FIX: Explicitly typed 'current' arrays
   const toggleMaterial = (mat: string) => {
     const current: string[] = formData.materials || [];
     if (current.includes(mat)) {
@@ -141,7 +141,7 @@ export default function ProductsTab() {
         ...formData,
         imageUrls: currentUrls,
         imageUrl: currentUrls[0] || '',
-        material: formData.materials?.[0] || '' // Fallback for legacy systems
+        material: formData.materials?.[0] || ''
       };
 
       if (editingProduct && editingProduct.id) {
@@ -162,6 +162,17 @@ export default function ProductsTab() {
     }
   };
 
+  // NEW: Real-time filtering logic
+  const filteredProducts = products.filter((product) => {
+    if (!searchQuery) return true;
+    const lowerQuery = searchQuery.toLowerCase();
+    return (
+      product.name?.toLowerCase().includes(lowerQuery) ||
+      product.category?.toLowerCase().includes(lowerQuery) ||
+      product.description?.toLowerCase().includes(lowerQuery)
+    );
+  });
+
   if (loading) {
     return (
       <div className="w-full py-20 flex flex-col items-center justify-center text-gray-400 gap-3">
@@ -173,11 +184,31 @@ export default function ProductsTab() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex justify-between items-center">
+      
+      {/* HEADER WITH SEARCH BAR AND ADD BUTTON */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h2 className="text-xl font-bold text-[#063c60]">Product Inventory</h2>
-        <button onClick={() => openModal()} className="flex items-center gap-2 bg-gradient-to-r from-[#063c60] to-[#084b78] text-white px-5 py-2.5 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
-          <Plus className="w-5 h-5" /> Add Product
-        </button>
+        
+        <div className="flex flex-col sm:flex-row items-center w-full md:w-auto gap-3">
+          
+          {/* SEARCH INPUT */}
+          <div className="relative w-full sm:w-64 lg:w-80">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-full text-sm outline-none focus:border-[#ec6917] focus:ring-1 focus:ring-[#ec6917] transition-all bg-white shadow-sm"
+            />
+          </div>
+
+          <button onClick={() => openModal()} className="flex shrink-0 items-center justify-center w-full sm:w-auto gap-2 bg-gradient-to-r from-[#063c60] to-[#084b78] text-white px-5 py-2.5 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
+            <Plus className="w-5 h-5" /> Add Product
+          </button>
+        </div>
       </div>
 
       <div className="bg-white/70 backdrop-blur-md rounded-2xl shadow-sm border border-gray-100 overflow-x-auto">
@@ -192,56 +223,67 @@ export default function ProductsTab() {
             </tr>
           </thead>
           <tbody>
-            {/* THE FIX: Explicitly typed 'product: Product' to guarantee correct mapping */}
-            {products.map((product: Product) => {
-              const activeMaterials: string[] = product.materials?.length ? product.materials : (product.material ? [product.material] : []);
-              const activeSizes: string[] = product.sizes || [];
-              
-              return (
-              <tr key={product.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                <td className="p-5 flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200 shadow-sm">
-                     <img 
-                       src={(product.imageUrls && product.imageUrls[0]) || product.imageUrl || 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'} 
-                       alt={product.name || "Product Image"} 
-                       className="w-full h-full object-cover" 
-                       onError={(e) => (e.currentTarget.src = 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image')} 
-                     />
-                  </div>
-                  <div>
-                    <div className="font-bold text-[#063c60]">{product.name}</div>
-                    <div className="text-sm text-gray-500 truncate max-w-[150px]">{product.description}</div>
-                  </div>
-                </td>
-                <td className="p-5"><span className="bg-blue-50/80 text-[#063c60] px-3 py-1 rounded-full text-xs font-bold border border-blue-100">{product.category}</span></td>
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product: Product) => {
+                const activeMaterials: string[] = product.materials?.length ? product.materials : (product.material ? [product.material] : []);
+                const activeSizes: string[] = product.sizes || [];
                 
-                <td className="p-5">
-                  <div className="flex flex-wrap gap-1 mb-1.5 max-w-[200px]">
-                    {activeMaterials.map((m: string) => (
-                      <span key={m} className="bg-gray-100 text-[#063c60] px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap">{m}</span>
-                    ))}
-                  </div>
-                  <div className="flex flex-wrap gap-1 max-w-[200px]">
-                    {activeSizes.map((s: string) => (
-                      <span key={s} className="border border-[#ec6917] text-[#ec6917] bg-white px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap">{s}</span>
-                    ))}
-                  </div>
-                </td>
-                
-                <td className="p-5">
-                  <div className="font-medium text-gray-900">{product.price}</div>
-                  <div className="text-xs font-semibold text-gray-500 mt-1">
-                    Stock: {product.stock !== undefined && product.stock !== '' ? product.stock : 'Unlimited'}
-                  </div>
-                </td>
-                <td className="p-5 text-right">
-                  <div className="flex justify-end gap-2">
-                    <button onClick={() => openModal(product)} className="p-2 text-[#063c60] hover:bg-blue-50 rounded-xl transition-colors"><Edit2 className="w-5 h-5" /></button>
-                    <button onClick={() => handleDelete(product.id)} className="p-2 text-[#ec6917] hover:bg-orange-50 rounded-xl transition-colors"><Trash2 className="w-5 h-5" /></button>
+                return (
+                <tr key={product.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                  <td className="p-5 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200 shadow-sm">
+                       <img 
+                         src={(product.imageUrls && product.imageUrls[0]) || product.imageUrl || 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'} 
+                         alt={product.name || "Product Image"} 
+                         className="w-full h-full object-cover" 
+                         onError={(e) => (e.currentTarget.src = 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image')} 
+                       />
+                    </div>
+                    <div>
+                      <div className="font-bold text-[#063c60]">{product.name}</div>
+                      <div className="text-sm text-gray-500 truncate max-w-[150px]">{product.description}</div>
+                    </div>
+                  </td>
+                  <td className="p-5"><span className="bg-blue-50/80 text-[#063c60] px-3 py-1 rounded-full text-xs font-bold border border-blue-100">{product.category}</span></td>
+                  
+                  <td className="p-5">
+                    <div className="flex flex-wrap gap-1 mb-1.5 max-w-[200px]">
+                      {activeMaterials.map((m: string) => (
+                        <span key={m} className="bg-gray-100 text-[#063c60] px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap">{m}</span>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-1 max-w-[200px]">
+                      {activeSizes.map((s: string) => (
+                        <span key={s} className="border border-[#ec6917] text-[#ec6917] bg-white px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap">{s}</span>
+                      ))}
+                    </div>
+                  </td>
+                  
+                  <td className="p-5">
+                    <div className="font-medium text-gray-900">{product.price}</div>
+                    <div className="text-xs font-semibold text-gray-500 mt-1">
+                      Stock: {product.stock !== undefined && product.stock !== '' ? product.stock : 'Unlimited'}
+                    </div>
+                  </td>
+                  <td className="p-5 text-right">
+                    <div className="flex justify-end gap-2">
+                      <button onClick={() => openModal(product)} className="p-2 text-[#063c60] hover:bg-blue-50 rounded-xl transition-colors"><Edit2 className="w-5 h-5" /></button>
+                      <button onClick={() => handleDelete(product.id)} className="p-2 text-[#ec6917] hover:bg-orange-50 rounded-xl transition-colors"><Trash2 className="w-5 h-5" /></button>
+                    </div>
+                  </td>
+                </tr>
+              )})
+            ) : (
+              <tr>
+                <td colSpan={5} className="p-10 text-center text-gray-500 bg-gray-50/50">
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Search className="w-8 h-8 text-gray-300" />
+                    <p className="font-medium">No products found matching "{searchQuery}"</p>
+                    <button onClick={() => setSearchQuery('')} className="text-sm text-[#ec6917] hover:underline mt-1">Clear search</button>
                   </div>
                 </td>
               </tr>
-            )})}
+            )}
           </tbody>
         </table>
       </div>
@@ -292,7 +334,6 @@ export default function ProductsTab() {
                 </select>
               </div>
 
-              {/* MULTI-SELECT PILL UI FOR MATERIALS */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Materials (Select Multiple)</label>
                 <div className="flex flex-wrap gap-2">
@@ -316,7 +357,6 @@ export default function ProductsTab() {
                 </div>
               </div>
 
-              {/* MULTI-SELECT PILL UI FOR SIZES */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Available Sizes (Select Multiple)</label>
                 <div className="flex flex-wrap gap-2">
