@@ -9,15 +9,20 @@ import { usePathname } from "next/navigation";
 export default function Navbar({
   invert = false,
   forceScrolledState = false,
+  permanentInvert = false,
+  isLockedDark = false, // Locks to earth-deep background / earth-light text
 }: {
   invert?: boolean;
   forceScrolledState?: boolean;
+  permanentInvert?: boolean;
+  isLockedDark?: boolean;
 }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
+      // Preserved your exact original scroll logic
       const heroSectionHeight = window.innerHeight - 80;
       if (window.scrollY > heroSectionHeight) {
         setIsScrolled(true);
@@ -33,21 +38,31 @@ export default function Navbar({
 
   const activeScrolled = isScrolled || forceScrolledState;
 
+  // LOGIC: If isLockedDark is true (FAQ view), bypass all scrolling/inversion logic
+  const navBackground = isLockedDark
+    ? "bg-earth-deep text-earth-light shadow-lg"
+    : permanentInvert
+      ? activeScrolled
+        ? "bg-earth-light/95 backdrop-blur-md text-earth-deep shadow-sm"
+        : "bg-transparent text-earth-deep shadow-none"
+      : activeScrolled
+        ? "bg-earth-deep/95 backdrop-blur-md text-earth-light shadow-lg"
+        : invert
+          ? "bg-transparent text-earth-deep shadow-none"
+          : "bg-transparent text-earth-light shadow-none";
+
+  // Text color logic mirroring the background logic
+  const isDarkText = !isLockedDark && (permanentInvert || (invert && !activeScrolled));
+
   return (
     <nav
-      className={`flex justify-between items-center py-6 px-6 md:px-12 fixed w-full top-0 z-50 transition-all duration-500 ${
-        activeScrolled
-          ? "bg-earth-deep/95 backdrop-blur-md text-earth-light shadow-lg"
-          : invert
-            ? "bg-transparent text-earth-deep shadow-none"
-            : "bg-transparent text-earth-light shadow-none"
-      }`}
+      className={`flex justify-between items-center py-6 px-6 md:px-12 fixed w-full top-0 z-50 transition-all duration-500 ${navBackground}`}
     >
       {/* Logo Section - Fixed width to balance the spacer on the right */}
       <Link
         href="/"
         className={`flex items-center gap-2 font-bold text-xl cursor-pointer transition-colors duration-500 w-24 flex-shrink-0 ${
-          invert && !activeScrolled ? "text-earth-deep" : ""
+          isDarkText ? "text-earth-deep" : "text-earth-light"
         }`}
       >
         <Image
@@ -105,7 +120,7 @@ export default function Navbar({
           <div className="absolute left-1/2 -translate-x-1/2 top-full pt-4 w-40 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0">
             <div
               className={`rounded-2xl shadow-xl py-2 flex flex-col overflow-hidden transition-colors duration-500 border ${
-                activeScrolled
+                isLockedDark || activeScrolled
                   ? "bg-earth-deep border-earth-light/10"
                   : invert
                     ? "bg-white/80 backdrop-blur-md border-earth-forest/10"
@@ -115,7 +130,7 @@ export default function Navbar({
               <Link
                 href="/contact?view=faq"
                 className={`px-5 py-3 text-sm font-semibold text-center transition-colors duration-300 ${
-                  activeScrolled
+                  isLockedDark || activeScrolled
                     ? "text-earth-light hover:bg-earth-forest"
                     : invert
                       ? "text-earth-deep hover:bg-earth-light"
@@ -128,11 +143,11 @@ export default function Navbar({
           </div>
         </div>
 
-        {/* CTA Button - MOVED HERE */}
+        {/* CTA Button */}
         <Link href="/enquiry">
           <button
             className={`px-6 py-2 rounded-full font-semibold transition-all duration-500 shadow-md hover:scale-105 ${
-              activeScrolled
+              isLockedDark || activeScrolled
                 ? "bg-earth-light text-earth-deep hover:bg-white"
                 : invert
                   ? "bg-earth-deep text-earth-light hover:bg-earth-forest"
