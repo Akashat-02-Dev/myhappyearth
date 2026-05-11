@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import ImpactMetrics from '@/components/ImpactMetrics';
+import Categories from '@/components/products/CategoryCaraousel';
 import MissionVision from '@/components/MissionVision';
 import ImpactStats from '@/components/ImpactStats';
 import Testimonials from '@/components/Testimonials';
@@ -19,6 +20,7 @@ export default function Home() {
         <ImpactMetrics />
         {/* Add any other sections here like <WhyChooseUs /> */}
         <MissionVision />
+        <Categories />
         <ImpactStats />
         <Testimonials />
       </div>

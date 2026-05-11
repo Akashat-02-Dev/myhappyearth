@@ -160,6 +160,7 @@ export default function Footer() {
                   priority 
                   className="w-auto h-20 object-contain" // Tailwind 'h-20' class applied here
                 /> 
+                <span className="ml-3 text-md tracking-wide uppercase">my happy earth</span>
               </div>
               <p className="text-[#FAF3DD]/70 leading-relaxed text-sm max-w-sm">
                 Curating sustainable, eco-friendly products that are kind to you and gentle on the planet. Small changes, massive impact.

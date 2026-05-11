@@ -15,12 +15,12 @@ export default function BlogSectionHeader() {
       
       {/* Logo Group */}
       <div className="flex items-center gap-2 mb-4">
-        <span className="text-xl font-bold font-serif text-[#2E473D]">🌿 My Happy Earth</span>
+        <span className="text-xl font-bold font-serif text-[#2E473D]">My Happy Earth</span>
       </div>
 
       {/* Main Headline */}
       <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-[#2E473D] max-w-4xl">
-        Edtiroal is Blog Blog
+        Blogs and Editorials
       </h1>
     </div>
   );

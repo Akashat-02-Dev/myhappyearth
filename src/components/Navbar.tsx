@@ -72,8 +72,9 @@ export default function Navbar({
           height={96}
           quality={100} // Prevent Next.js from heavily compressing the logo
           priority // Load immediately as it is a crucial LCP (Largest Contentful Paint) element
-          className="w-60 h-15 object-contain" // Render beautifully at 48x48 pixels
+          className="w-60 h-12 object-contain" // Render beautifully at 48x48 pixels
         />
+        
       </Link>
 
       {/* Navigation Links & CTA */}

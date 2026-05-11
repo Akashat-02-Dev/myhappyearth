@@ -4,16 +4,27 @@ import type { NextConfig } from 'next';
 const config = {
   // NEW: Allows external image URLs (like Unsplash, Shopify, etc.) to load in the Next.js <Image> component
   images: {
+    qualities: [75, 100],
     remotePatterns: [
+{
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      // FIX: Added the Unsplash 'plus' subdomain
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'plus.unsplash.com',
       },
       {
-        protocol: 'http',
-        hostname: '**',
+        protocol: 'https',
+        hostname: 'media.licdn.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      }
     ],
+    dangerouslyAllowSVG: true, // Allows SVGs to be used with the <Image> component, but be cautious of untrusted sources
   },
 
   // 1. Silences the specific Turbopack warning in your terminal

@@ -14,25 +14,32 @@ const heroProducts = [
   {
     image: "/products/bamboo-kitchenware.jpg", 
     title: "Sustainable Bags",
+    id: "Sustainable Bags",
     color: "#D0DBCF" 
   },
   {
     image: "/products/hydrate-bottles.jpg", 
     title: "Compostable/Biodegradable",
+    id: "Compostable Products",
     color: "#D1C9B9" 
   },
   {
     image: "/products/organic-living.jpg", 
     title: "NaturaDine/EcoServe",
+    id: "EcoServe",
     color: "#E2DCD3"
   }
 ];
 
-function ProductCategoryItem({ image, title, color }: { image: string, title: string, color: string }) {
+function ProductCategoryItem({ image, title, id, color }: { image: string, title: string, id: string, color: string }) {
   return (
-    <div className="flex flex-col items-center text-center">
+    // Wrap the entire item in a Link to redirect with the category filter applied
+    <Link 
+      href={`/products/shop?category=${encodeURIComponent(id)}`} 
+      className="flex flex-col items-center text-center group cursor-pointer"
+    >
       <div 
-        className="w-full aspect-[4/3] rounded-[1.5rem] bg-center bg-cover border border-earth-forest/10 mb-4 md:mb-5" 
+        className="w-full aspect-[4/3] rounded-[1.5rem] bg-center bg-cover border border-earth-forest/10 mb-4 md:mb-5 transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:shadow-xl" 
         style={{ 
           backgroundColor: color, 
           backgroundImage: `url(${image})`, 
@@ -40,10 +47,10 @@ function ProductCategoryItem({ image, title, color }: { image: string, title: st
       >
         {/* Placeholder text hidden */}
       </div>
-      <p className="text-lg md:text-xl font-serif font-bold text-earth-forest tracking-tight leading-tight px-1">
+      <p className="text-lg md:text-xl font-serif font-bold text-earth-forest tracking-tight leading-tight px-1 transition-colors duration-300 group-hover:text-earth-sage">
         {title}
       </p>
-    </div>
+    </Link>
   );
 }
 
@@ -97,7 +104,7 @@ export default function Hero() {
           <p className="text-lg sm:text-xl md:text-2xl font-sans text-earth-sage mb-8 drop-shadow-md md:pr-6">
             Australia's Home of Sustainable Living
           </p>
-          <Link href="/shop">
+          <Link href="/products/shop">
             <button className="bg-earth-light text-earth-forest px-8 py-3 rounded-full font-semibold hover:bg-white transition duration-300 shadow-xl hover:-translate-y-1">
               Explore Products
             </button>
@@ -127,6 +134,7 @@ export default function Hero() {
                 key={index} 
                 image={product.image} 
                 title={product.title} 
+                id={product.id}
                 color={product.color}
               />
             ))}
