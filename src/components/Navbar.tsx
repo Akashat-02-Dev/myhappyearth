@@ -61,16 +61,18 @@ export default function Navbar({
       {/* Logo Section - Fixed width to balance the spacer on the right */}
       <Link
         href="/"
-        className={`flex items-center gap-2 font-bold text-xl cursor-pointer transition-colors duration-500 w-24 flex-shrink-0 ${
+        className={`flex items-center gap-3 font-bold text-xl cursor-pointer transition-colors duration-500 w-28 flex-shrink-0 ${
           isDarkText ? "text-earth-deep" : "text-earth-light"
         }`}
       >
         <Image
           src="/logo.png"
-          alt="Happy Earth Logo"
-          width={32}
-          height={32}
-          className="w-10 h-10"
+          alt="My Happy Earth Logo"
+          width={96} // Fetch a higher resolution source for crispness on high-DPI screens
+          height={96}
+          quality={100} // Prevent Next.js from heavily compressing the logo
+          priority // Load immediately as it is a crucial LCP (Largest Contentful Paint) element
+          className="w-60 h-15 object-contain" // Render beautifully at 48x48 pixels
         />
       </Link>
 
@@ -159,8 +161,8 @@ export default function Navbar({
         </Link>
       </div>
 
-      {/* Invisible Spacer - Replaces the button to keep the justify-between perfectly centered */}
-      <div className="hidden md:block w-24"></div>
+      {/* Invisible Spacer - Scaled up to w-28 to perfectly balance the slightly larger logo area */}
+      <div className="hidden md:block w-28"></div>
     </nav>
   );
 }

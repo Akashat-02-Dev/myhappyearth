@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from 'next/link';
 import { 
   ArrowRight, 
@@ -98,16 +99,6 @@ function FooterLinkColumn({
   );
 }
 
-// Payment method icons
-function PaymentMethods() {
-  const iconClasses = "w-10 h-6 text-[#FAF3DD]/40 hover:text-[#FAF3DD] transition-colors duration-300";
-  return (
-    <div className="flex items-center gap-3">
-      <svg className={iconClasses} viewBox="0 0 32 32"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm10 10c0 .356-.013.708-.038 1.057l-1.921-.96a1 1 0 0 1-.41-.715L19 11h-1l-.37-.828a1 1 0 0 1-.035-.788L18 8.167A9.957 9.957 0 0 0 12 6c-.463 0-.918.032-1.365.093l.365.73A1 1 0 0 1 11 8l-1.2 1.2a1 1 0 0 1-.723.277L8.03 9.47A9.972 9.972 0 0 0 4 12c0 2.21 1.79 4 4 4s4-1.79 4-4H8v-1.6l1.2-.6a1 1 0 0 1 .8-.2l2 .5a1 1 0 0 1 .715.715l.2 1.2a1 1 0 0 1-.2 1.2l-.6.6a1 1 0 0 1-.8.2h-1l-.5-2h-1v2h1v1.6l-.6.6a1 1 0 0 1-.8.2h-1l-.5-2h-1v2h1c.075 0 .151-.005.226-.015a9.975 9.975 0 0 0 5.174 4.015L11 21h-1l-1.2 2.4A9.956 9.956 0 0 0 12 24c.792 0 1.566-.093 2.316-.27l-.316-1.58A1 1 0 0 1 14 21h1v-.8a1 1 0 0 1 1-1h1v-.8a1 1 0 0 1 1-1h1v-.8a1 1 0 0 1 1-1zm3.89 3.82L23 21h-1a1 1 0 0 1-1-1h-1a1 1 0 0 1-1-1h-1v-1l1-.5a1 1 0 0 1 .8-.2h1a1 1 0 0 1 1 1v1h1a1 1 0 0 1 1 1h1a1 1 0 0 1 1 1z" fill="currentColor"/></svg>
-    </div>
-  );
-}
-
 // Social media
 function SocialMedia() {
   const iconWrapperClasses = "flex items-center justify-center w-10 h-10 rounded-full bg-[#FAF3DD]/5 border border-[#FAF3DD]/10 text-[#FAF3DD] hover:bg-[#A3B18A] hover:border-[#A3B18A] hover:text-[#344E41] hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(163,177,138,0.3)] transition-all duration-300 ease-out";
@@ -127,7 +118,6 @@ function SocialMedia() {
 }
 
 export default function Footer() {
-  // NEW: Updated Product Categories
   const shopLinks = [
     "All Products", 
     "Sustainable Bags", 
@@ -160,9 +150,16 @@ export default function Footer() {
           {/* Brand & Contact (Spans 4 columns) */}
           <div className="lg:col-span-4 flex flex-col gap-8">
             <div>
-              <div className="flex items-center gap-2 text-[#FAF3DD] font-extrabold text-2xl group cursor-pointer mb-4">
-                <span className="text-[#A3B18A] group-hover:rotate-12 transition-transform duration-300 ease-out">🌿</span> 
-                <span className="tracking-tight">My Happy Earth</span>
+              <div className="flex items-center text-[#FAF3DD] font-extrabold text-2xl group cursor-pointer mb-4">
+                <Image
+                  src="/logo.png"
+                  alt="My Happy Earth Logo"
+                  width={400} // High resolution source width to prevent any blur
+                  height={100} // High resolution source height
+                  quality={100}
+                  priority 
+                  className="w-auto h-20 object-contain" // Tailwind 'h-20' class applied here
+                /> 
               </div>
               <p className="text-[#FAF3DD]/70 leading-relaxed text-sm max-w-sm">
                 Curating sustainable, eco-friendly products that are kind to you and gentle on the planet. Small changes, massive impact.
@@ -190,7 +187,6 @@ export default function Footer() {
           
           {/* Link Columns (Span 2 columns each) */}
           <div className="lg:col-span-2 lg:ml-8">
-            {/* Added isShopCategory prop to handle dynamic filtering */}
             <FooterLinkColumn title="Shop" links={shopLinks} isShopCategory={true} />
           </div>
           
@@ -250,9 +246,6 @@ export default function Footer() {
               <Link href="/legal" className="hover:text-[#FAF3DD] transition-colors">Terms of Service</Link>
             </div>
           </div>
-
-          {/* Payment Methods */}
-          {/* <PaymentMethods /> */}
           
         </div>
 
