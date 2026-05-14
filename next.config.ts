@@ -4,6 +4,7 @@ import type { NextConfig } from 'next';
 const config = {
   // NEW: Allows external image URLs (like Unsplash, Shopify, etc.) to load in the Next.js <Image> component
   images: {
+    formats: ['image/avif', 'image/webp'], // Forces AVIF first!
     qualities: [75, 100],
     remotePatterns: [
 {
@@ -22,6 +23,10 @@ const config = {
       {
         protocol: 'https',
         hostname: 'placehold.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
       }
     ],
     dangerouslyAllowSVG: true, // Allows SVGs to be used with the <Image> component, but be cautious of untrusted sources
