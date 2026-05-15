@@ -9,24 +9,11 @@ const config = {
     remotePatterns: [
 {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      // FIX: Added the Unsplash 'plus' subdomain
-      {
-        protocol: 'https',
-        hostname: 'plus.unsplash.com',
+        hostname: '**', // The double asterisk allows ANY https domain
       },
       {
-        protocol: 'https',
-        hostname: 'media.licdn.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-      },
-      {
-        protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
+        protocol: 'http',
+        hostname: '**', // Allows ANY http domain
       }
     ],
     dangerouslyAllowSVG: true, // Allows SVGs to be used with the <Image> component, but be cautious of untrusted sources
