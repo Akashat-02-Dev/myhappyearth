@@ -57,7 +57,7 @@ const ImpactMetrics: FC = () => {
   const extendedMetrics = [...metricsData, ...metricsData];
 
   return (
-    <section className="w-full bg-[#588157] text-[#FAF3DD] py-12 overflow-hidden flex items-center border-y border-[#FAF3DD]/10">
+    <section className="w-full bg-[#FAF3DD] text-[#588157] py-12 overflow-hidden flex items-center border-y border-[#FAF3DD]/10">
       
       {/* Injecting custom CSS styles for the smooth marquee effect. 
         It shifts the entire container exactly 50% to the left, which perfectly aligns 

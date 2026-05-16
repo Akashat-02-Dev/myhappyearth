@@ -3,6 +3,8 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 export interface EnquiryData {
+  enquiryType: string; // Will receive 'Individual' or 'Business'
+  companyName?: string; // Optional: Only filled if they select Business
   firstName: string;
   lastName: string;
   email: string;
@@ -14,7 +16,7 @@ export interface EnquiryData {
 export async function submitEnquiry(data: EnquiryData) {
   try {
     const docRef = await addDoc(collection(db, "enquiries"), {
-      ...data,
+      ...data, // This will automatically grab the new fields
       status: 'unread',
       createdAt: serverTimestamp()
     });

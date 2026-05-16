@@ -29,7 +29,9 @@ function ShopContent() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [sortOption, setSortOption] = useState('popular');
+  
+  // FIX 1: Set default to match the dropdown's default value
+  const [sortOption, setSortOption] = useState('alphabetical'); 
   const [maxPrice, setMaxPrice] = useState(200);
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
 
@@ -79,11 +81,20 @@ function ShopContent() {
 
     result = result.filter(p => parsePrice(p.price) <= maxPrice);
 
+    // FIX 2: Check both legacy string and new array for materials
     if (selectedMaterials.length > 0) {
-      result = result.filter(p => p.material && selectedMaterials.includes(p.material));
+      result = result.filter(p => {
+        const legacyMatch = p.material && selectedMaterials.includes(p.material);
+        const arrayMatch = p.materials && p.materials.some(m => selectedMaterials.includes(m));
+        return legacyMatch || arrayMatch;
+      });
     }
 
+    // FIX 3: Update switch cases to perfectly match the Sidebar options
     switch (sortOption) {
+      case 'alphabetical':
+        result.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+        break;
       case 'price_low': 
         result.sort((a, b) => parsePrice(a.price) - parsePrice(b.price)); 
         break;
@@ -91,15 +102,13 @@ function ShopContent() {
         result.sort((a, b) => parsePrice(b.price) - parsePrice(a.price)); 
         break;
       case 'newest': 
-        // THE FIX: We safely use .toString() instead of the String() wrapper
-        // to prevent the "Type 'String' has no call signatures" error
         result.sort((a, b) => {
           const idA = a.id ? a.id.toString() : "";
           const idB = b.id ? b.id.toString() : "";
           return idB.localeCompare(idA);
         }); 
         break;
-      case 'popular':
+      case 'best_seller':
       default: 
         result.sort((a, b) => (b.rating || 0) - (a.rating || 0)); 
         break;
@@ -133,7 +142,7 @@ function ShopContent() {
 
           <div className="flex-grow flex flex-col gap-8">
             {loading ? (
-              <div className="py-32 text-center text-[#6F9B69] text-xl font-bold animate-pulse">
+              <div className="py-32 text-center text-transparent bg-clip-text bg-gradient-to-r from-[#063c60] to-[#ec6917] text-xl font-bold animate-pulse">
                 Loading our collection...
               </div>
             ) : (
@@ -168,7 +177,7 @@ function ShopContent() {
 export default function ShopPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-[#F8FAF7] text-[#6F9B69] font-bold text-xl">
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAF7] text-transparent bg-clip-text bg-gradient-to-r from-[#063c60] to-[#ec6917] font-bold text-xl">
         Loading Shop...
       </div>
     }>

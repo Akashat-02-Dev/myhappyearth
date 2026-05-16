@@ -27,7 +27,7 @@ export default function EnquiryInfo() {
             <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-sm"><Phone className="w-6 h-6" /></div>
             <div>
               <p className="text-white/60 text-sm font-semibold tracking-wider uppercase mb-1">Call Us</p>
-              <p className="text-lg font-medium">+61 2 1234 5678</p>
+              <p className="text-lg font-medium">+61 (0)469 746 076</p>
             </div>
           </div>
 
@@ -35,7 +35,7 @@ export default function EnquiryInfo() {
             <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-sm"><Clock className="w-6 h-6" /></div>
             <div>
               <p className="text-white/60 text-sm font-semibold tracking-wider uppercase mb-1">Response Time</p>
-              <p className="text-lg font-medium">Within 24 business hours</p>
+              <p className="text-lg font-medium">Within 8 business hours</p>
             </div>
           </div>
         </div>

@@ -24,8 +24,7 @@ export const mainContactNodes = [
       </svg>
     ),
     // Added '\n' to data for consistent rendering inside the modular component
-    text: "Thornleigh, Sydney\nNSW 2120 ", 
-  },
+    text: "Thornleigh, Sydney NSW 2120 \n Holmview, Brisbane QLD 4207"},
   {
     icon: (
       // SVG for Phone
@@ -33,15 +32,15 @@ export const mainContactNodes = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-1.34 1.785a16.562 16.562 0 01-7.045-7.045l1.785-1.34c.362-.272.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
       </svg>
     ),
-    text: "+61 46 974 6076\n+61 48 135 7909",
+    text: "+61 (0)469 746 076\n+61 (0)481 357 909",
     isLink: true,
     href: "tel:130032784",
   },
 ];
 
 export const heroAddressList = [
-  "Sydney: Thornleigh NSW 2120",
-  "Brisbane: Holmview QLD 4207", // <-- Fixed typo Sret -> Street
+  // "Sydney: Thornleigh NSW 2120",
+  // "Brisbane: Holmview QLD 4207", // <-- Fixed typo Sret -> Street
 ];
 
 export const heroBusinessHours = "Business Hours: Mon - Fri: 9am - 5pm AEST";

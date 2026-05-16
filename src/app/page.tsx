@@ -15,7 +15,7 @@ export default function Home() {
       {/* THE FIX: Removed 'pt-8' from this div. 
         Now the Hero will hit the absolute top of the browser!
       */}
-      <div className="flex flex-col gap-y-24 md:gap-y-32 pb-24">
+      <div className="flex flex-col gap-y-24 md:gap-y-32 pb-0">
         <Hero />
         <ImpactMetrics />
         {/* Add any other sections here like <WhyChooseUs /> */}

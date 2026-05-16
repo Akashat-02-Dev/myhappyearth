@@ -35,29 +35,29 @@ const getHrefForLink = (linkName: string) => {
 };
 
 // Trust Signal Banner Component
-function TrustSignals() {
-  const signals = [
-    { icon: Leaf, title: "100% Sustainable", desc: "Ethically sourced materials" },
-    { icon: Truck, title: "Carbon Neutral Shipping", desc: "Free delivery on orders over $100" },
-    { icon: ShieldCheck, title: "Secure Checkout", desc: "Encrypted & safe payments" },
-  ];
+// function TrustSignals() {
+//   const signals = [
+//     { icon: Leaf, title: "100% Sustainable", desc: "Ethically sourced materials" },
+//     { icon: Truck, title: "Carbon Neutral Shipping", desc: "Free delivery on orders over $100" },
+//     { icon: ShieldCheck, title: "Secure Checkout", desc: "Encrypted & safe payments" },
+//   ];
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-10 border-b border-[#FAF3DD]/10 mb-16">
-      {signals.map((signal, idx) => (
-        <div key={idx} className="flex items-center gap-4 group">
-          <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FAF3DD]/5 border border-[#FAF3DD]/10 text-[#A3B18A] group-hover:bg-[#A3B18A] group-hover:text-[#344E41] transition-all duration-500 ease-out shadow-sm">
-            <signal.icon className="w-6 h-6" strokeWidth={1.5} />
-          </div>
-          <div>
-            <h4 className="text-[#FAF3DD] font-semibold text-sm tracking-wide">{signal.title}</h4>
-            <p className="text-[#FAF3DD]/60 text-xs mt-0.5">{signal.desc}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
+//   return (
+//     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 py-10 border-b border-[#FAF3DD]/10 mb-16">
+//       {signals.map((signal, idx) => (
+//         <div key={idx} className="flex items-center gap-4 group">
+//           <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-[#FAF3DD]/5 border border-[#FAF3DD]/10 text-[#A3B18A] group-hover:bg-[#A3B18A] group-hover:text-[#344E41] transition-all duration-500 ease-out shadow-sm">
+//             <signal.icon className="w-6 h-6" strokeWidth={1.5} />
+//           </div>
+//           <div>
+//             <h4 className="text-[#FAF3DD] font-semibold text-sm tracking-wide">{signal.title}</h4>
+//             <p className="text-[#FAF3DD]/60 text-xs mt-0.5">{signal.desc}</p>
+//           </div>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
 
 // Enhanced Link Column with animated underlines and dynamic category routing
 function FooterLinkColumn({ 
@@ -104,14 +104,27 @@ function SocialMedia() {
   const iconWrapperClasses = "flex items-center justify-center w-10 h-10 rounded-full bg-[#FAF3DD]/5 border border-[#FAF3DD]/10 text-[#FAF3DD] hover:bg-[#A3B18A] hover:border-[#A3B18A] hover:text-[#344E41] hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(163,177,138,0.3)] transition-all duration-300 ease-out";
   return (
     <div className="flex items-center gap-3">
-      <Link href="#" className={iconWrapperClasses} aria-label="Facebook">
+      <Link href="YOUR_FACEBOOK_LINK_HERE" className={iconWrapperClasses} aria-label="Facebook" target="_blank" rel="noopener noreferrer">
         <svg className="w-4 h-4" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.919-.058-1.265-.069-1.644-.069-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" fill="currentColor"/></svg>
       </Link>
-      <Link href="#" className={iconWrapperClasses} aria-label="Instagram">
+      
+      <Link href="YOUR_INSTAGRAM_LINK_HERE" className={iconWrapperClasses} aria-label="Instagram" target="_blank" rel="noopener noreferrer">
         <svg className="w-4 h-4" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.323-1.325z" fill="currentColor"/></svg>
       </Link>
-      <Link href="#" className={iconWrapperClasses} aria-label="Twitter">
-        <svg className="w-4 h-4" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" fill="currentColor"/></svg>
+      
+      <Link href="YOUR_TWITTER_LINK_HERE" className={iconWrapperClasses} aria-label="Twitter" target="_blank" rel="noopener noreferrer">
+<svg className="w-4 h-4" viewBox="0 0 24 24">
+  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.008 5.378H5.078z" fill="currentColor"/>
+</svg>
+      </Link>
+
+      <Link href="YOUR_LINKEDIN_LINK_HERE" className={iconWrapperClasses} aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <svg className="w-4 h-4" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" fill="currentColor"/></svg>
+      </Link>
+      <Link href="YOUR_LINKEDIN_LINK_HERE" className={iconWrapperClasses} aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+        <svg className="w-4 h-4" viewBox="0 0 24 24">
+  <path d="M12.525.02C13.812-.008 15.102.008 16.39.02c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.22-1.15 4.39-2.91 5.72-1.89 1.43-4.32 1.82-6.6 1.4-2.27-.42-4.25-1.84-5.36-3.87-1.11-2.03-1.18-4.5-.18-6.61 1-2.11 2.93-3.7 5.16-4.24 1.18-.28 2.42-.3 3.61-.1v4.02c-1.39-.06-2.82.35-3.88 1.25-1.07.91-1.66 2.34-1.57 3.76.08 1.42.86 2.73 2.07 3.48 1.21.74 2.73.91 4.09.48 1.36-.43 2.5-1.5 2.98-2.84.28-.78.36-1.63.36-2.46V0h-4.01z" fill="currentColor"/>
+</svg>
       </Link>
     </div>
   );
@@ -119,7 +132,6 @@ function SocialMedia() {
 
 export default function Footer() {
   const shopLinks = [
-    "All Products", 
     "Sustainable Bags", 
     "Compostable Products", 
     "Biodegradable Products", 
@@ -131,7 +143,7 @@ export default function Footer() {
   ];
   
   const companyLinks = ["Our Story", "Our Impact", "Blog", "Sustainability Report"];
-  const supportLinks = ["FAQs", "Privacy Policy", "Terms & Conditions"];
+  const supportLinks = ["FAQs", "How To Order", "Privacy Policy", "Terms & Conditions"];
   
   return (
     <footer className="w-full bg-[#344E41] text-[#FAF3DD] pt-10 pb-8 px-6 md:px-12 lg:px-24 font-sans border-t border-[#FAF3DD]/5 relative overflow-hidden">
@@ -142,7 +154,7 @@ export default function Footer() {
       <div className="max-w-[1400px] mx-auto relative z-10">
         
         {/* Top: Trust Signals */}
-        <TrustSignals />
+        {/* <TrustSignals /> */}
         
         {/* Middle: Main Footer Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16">
@@ -171,7 +183,7 @@ export default function Footer() {
             <div className="flex flex-col gap-4 text-sm text-[#FAF3DD]/70">
               <div className="flex items-start gap-3 group">
                 <MapPin className="w-5 h-5 text-[#A3B18A] shrink-0 mt-0.5" />
-                <span className="group-hover:text-[#FAF3DD] transition-colors">123 Eco Way, Melbourne<br/>VIC 3000, Australia</span>
+                <span className="group-hover:text-[#FAF3DD] transition-colors">Sydney: Thornleigh NSW 2120<br/>Brisbane: Holmview QLD 4207</span>
               </div>
               <a href="mailto:hello@myhappyearth.com.au" className="flex items-center gap-3 group">
                 <Mail className="w-5 h-5 text-[#A3B18A] shrink-0" />
@@ -179,7 +191,7 @@ export default function Footer() {
               </a>
               <a href="tel:1800123456" className="flex items-center gap-3 group">
                 <Phone className="w-5 h-5 text-[#A3B18A] shrink-0" />
-                <span className="group-hover:text-[#FAF3DD] transition-colors">1800 123 456</span>
+                <span className="group-hover:text-[#FAF3DD] transition-colors">+61 (0)469 746 076</span>
               </a>
             </div>
 
@@ -239,7 +251,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-[#FAF3DD]/60">
           
           {/* Copyright & Legal */}
-          <div className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
+<div className="flex flex-col md:flex-row items-center md:justify-end gap-4 text-center md:text-right ml-auto">
             <p>© {new Date().getFullYear()} My Happy Earth. All rights reserved.</p>
             <div className="hidden md:block w-1 h-1 rounded-full bg-[#FAF3DD]/20"></div>
             <div className="flex items-center gap-4">

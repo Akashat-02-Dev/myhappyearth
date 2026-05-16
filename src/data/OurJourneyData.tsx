@@ -6,7 +6,7 @@ export const journeyPanels = [
     imageUrl: "/images/family-sustainable-kitchen.jpg", 
     buttonText: "Shop Now",
     buttonStyle: "bg-earth-deep text-earth-light hover:bg-earth-green-deep/10",
-    linkUrl: "/shop-individuals" 
+    linkUrl: "/products/shop/" 
   },
   {
     title: "Sustainable Solutions for Your Business",
@@ -15,6 +15,6 @@ export const journeyPanels = [
     buttonText: "Get a Quote",
     buttonStyle: "bg-earth-deep text-earth-light hover:bg-earth-green-deep/10",
     isOutlined: true,
-    linkUrl: "/business-solutions" 
+    linkUrl: "/enquiry" 
   },
 ];

@@ -84,7 +84,7 @@ export default function Testimonials() {
         <div className="flex flex-col md:flex-row items-center justify-center gap-6">
           
           {/* Google Review Pill */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-[2rem] shadow-md border border-earth-forest/10 py-3 px-6 flex items-center gap-4 hover:scale-105 transition-transform duration-300 cursor-pointer">
+          {/* <div className="bg-white/90 backdrop-blur-sm rounded-[2rem] shadow-md border border-earth-forest/10 py-3 px-6 flex items-center gap-4 hover:scale-105 transition-transform duration-300 cursor-pointer">
             <div className="font-sans font-extrabold text-3xl text-earth-deep">
               4.9
             </div>
@@ -102,7 +102,7 @@ export default function Testimonials() {
                 <span className="text-earth-deep/70 ml-1 font-normal">reviews</span>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Social Proof Text */}
           <div className="flex flex-col text-center md:text-left drop-shadow-sm">
