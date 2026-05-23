@@ -11,7 +11,20 @@ import {
   Truck, 
   ShieldCheck 
 } from 'lucide-react';
+// 1. IMPORT PROFESSIONAL GOOGLE FONTS
+import { Playfair_Display, Montserrat } from 'next/font/google';
 
+// 2. INITIALIZE FONTS
+const playfair = Playfair_Display({ 
+  subsets: ['latin'], 
+  weight: ['700', '800'], // Heavy weights for a bold brand statement
+  style: ['normal', 'italic'] 
+});
+
+const montserrat = Montserrat({ 
+  subsets: ['latin'], 
+  weight: ['400', '500'] // Clean, readable weights for the tagline
+});
 // Dynamic routing helper for standard pages
 const getHrefForLink = (linkName: string) => {
   switch (linkName) {
@@ -172,9 +185,13 @@ export default function Footer() {
                   priority 
                   className="w-auto h-20 object-contain" // Tailwind 'h-20' class applied here
                 /> 
-                <span className="ml-3 text-md tracking-wide uppercase">my happy earth</span>
+              <span className={`${playfair.className} ml-4 text-2xl md:text-[1.75rem] font-bold tracking-wide uppercase`}>
+                  my happy earth
+                </span>
               </div>
-              <p className="text-[#FAF3DD]/70 leading-relaxed text-sm max-w-sm">
+              
+              {/* TAGLINE: Using Montserrat */}
+              <p className={`${montserrat.className} text-[#FAF3DD]/80 font-medium text-sm md:text-[15px] leading-loose max-w-sm`}>
                 Curating sustainable, eco-friendly products that are kind to you and gentle on the planet. Small changes, massive impact.
               </p>
             </div>

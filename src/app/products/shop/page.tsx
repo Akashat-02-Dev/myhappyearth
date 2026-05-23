@@ -18,9 +18,24 @@ const parsePrice = (priceStr: string | undefined) => {
   return match ? parseFloat(match[0]) : 0;
 };
 
+// --- CATEGORY MAPPER ---
+// Standardizes "EcoServe" to "Eco-Serve" and groups subcategories
+const getMasterCategory = (cat: string) => {
+  const compostableGroup = ['Compostable Products', 'Biodegradable Products'];
+  // Added both 'Eco-Serve' and 'EcoServe' to catch any legacy database entries!
+  const ecoServeGroup = ['Eco-Serve', 'EcoServe', 'Natura Dine', 'Zero Waste', 'Table Products'];
+  
+  if (compostableGroup.includes(cat)) return 'Compostable Products';
+  if (ecoServeGroup.includes(cat)) return 'Eco-Serve'; // Forces the hyphenated version
+  return cat;
+};
+
 function ShopContent() {
   const searchParams = useSearchParams();
-  const initialCategory = searchParams.get('category') || 'All';
+  
+  // Intercept the URL immediately and map it to the master category
+  const rawCatFromUrl = searchParams.get('category') || 'All';
+  const initialCategory = getMasterCategory(rawCatFromUrl);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [dynamicCategories, setDynamicCategories] = useState<string[]>(['All']);
@@ -30,15 +45,21 @@ function ShopContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   
-  // FIX 1: Set default to match the dropdown's default value
   const [sortOption, setSortOption] = useState('alphabetical'); 
   const [maxPrice, setMaxPrice] = useState(200);
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
 
+  // Update selected category when URL changes, mapping to the master group
   useEffect(() => {
     const catFromUrl = searchParams.get('category');
     if (catFromUrl) {
-      setSelectedCategory(catFromUrl);
+      const masterCat = getMasterCategory(catFromUrl);
+      setSelectedCategory(masterCat);
+      
+      // Silently rewrite the URL so the active category pill works perfectly
+      if (masterCat !== catFromUrl) {
+        window.history.replaceState(null, '', `?category=${encodeURIComponent(masterCat)}`);
+      }
     }
   }, [searchParams]);
 
@@ -52,7 +73,12 @@ function ShopContent() {
         ]);
         
         setProducts(productsData || []);
-        setDynamicCategories(['All', ...(settingsData?.categories || [])]); 
+        
+        // Map the categories fetched from settings to avoid duplicate buttons
+        const fetchedCategories = settingsData?.categories || [];
+        const cleanCategories = Array.from(new Set(fetchedCategories.map(getMasterCategory)));
+        setDynamicCategories(['All', ...cleanCategories]); 
+        
         setDynamicMaterials(settingsData?.materials || []);
       } catch (error) {
         console.error("Error fetching shop data:", error);
@@ -75,13 +101,25 @@ function ShopContent() {
       );
     }
 
+    // --- GROUP FILTERING ---
     if (selectedCategory !== 'All') {
-      result = result.filter(p => p.category === selectedCategory);
+      const compostableGroup = ['Compostable Products', 'Biodegradable Products'];
+      const ecoServeGroup = ['Eco-Serve', 'EcoServe', 'Natura Dine', 'Zero Waste', 'Table Products'];
+
+      result = result.filter(p => {
+        if (selectedCategory === 'Compostable Products') {
+          return compostableGroup.includes(p.category);
+        }
+        // Now checks against the newly enforced hyphenated state
+        if (selectedCategory === 'Eco-Serve') {
+          return ecoServeGroup.includes(p.category);
+        }
+        return p.category === selectedCategory;
+      });
     }
 
     result = result.filter(p => parsePrice(p.price) <= maxPrice);
 
-    // FIX 2: Check both legacy string and new array for materials
     if (selectedMaterials.length > 0) {
       result = result.filter(p => {
         const legacyMatch = p.material && selectedMaterials.includes(p.material);
@@ -90,7 +128,6 @@ function ShopContent() {
       });
     }
 
-    // FIX 3: Update switch cases to perfectly match the Sidebar options
     switch (sortOption) {
       case 'alphabetical':
         result.sort((a, b) => (a.name || "").localeCompare(b.name || ""));

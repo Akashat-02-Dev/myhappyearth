@@ -13,7 +13,7 @@ const CATEGORY_IMAGES: Record<string, string> = {
   "Table Products": "https://images.unsplash.com/photo-1723934603562-9a99eeb6bb23?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "Natura Dine": "https://images.unsplash.com/photo-1708893490503-7aeeb38f638e?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "Zero Waste": "https://images.unsplash.com/photo-1633878353628-5fc8b983325c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "EcoServe": "https://images.unsplash.com/photo-1648587456176-4969b0124b12?q=80&w=1259&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "Eco-Serve": "https://images.unsplash.com/photo-1648587456176-4969b0124b12?q=80&w=1259&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "Recycled Plastic": "https://images.unsplash.com/photo-1683777072528-1caf12cb1e37?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 };
 

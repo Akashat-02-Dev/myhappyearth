@@ -3,19 +3,19 @@
 // Mock data array
 const reviewsData = [
   {
-    text: "My Happy Earth's products are not just good for the planet, incredibly effective and stylish, and stylish. A brand I truly trust and love!",
+    text: "The durability and craftsmanship of their hemp and organic cotton products are unmatched. I’ve used them daily, and they maintain their structure, breathability, and clean, modern aesthetic perfectly. It’s a relief to find a company that values environmental responsibility without sacrificing everyday functionality",
     name: "Sarah Jenkins",
     role: "Eco Activist",
     image: "/reviews/sarah.jpg"
   },
   {
-    text: "As an architect, I appreciate sustainable sustainable design. commih's conmitment the environment and quality is. Their packaging is als also brilliant.",
+    text: "Switching to their areca leaf and bagasse tableware was the best decision we made for our recent events. The Ecoserve range is remarkably sturdy, handles heat flawlessly, and looks incredibly sleek on the table. Our guests constantly compliment the quality, which shows that sustainable choices can still offer a first-class experience.",
     name: "Michael Chen",
     role: "Architect",
     image: "/reviews/michael.jpg"
   },
   {
-    text: "Being a student, affordibilly and ethics matter on memo My He; Eeliteee! Their Their natural skincare range range is absolute favorite.",
+    text: "I was looking for sustainable alternatives that didn't compromise on a premium feel, and their juco and handcrafted jute products completely exceeded my expectations. The texture and elegant finish rival high-end boutique designs, proving that eco-friendly materials can be crafted with incredible sophistication. Highly recommended!",
     name: "Emma Wilson",
     role: "University Student",
     image: "/reviews/emma.jpg"
@@ -41,15 +41,15 @@ function TestimonialCard({ review }: { review: any }) {
       <div className="flex flex-col items-center mt-auto">
         <div 
           className="w-20 h-20 rounded-full bg-earth-light bg-cover bg-center mb-4 border-2 border-white shadow-sm flex items-center justify-center text-earth-forest/40 text-xs"
-          style={{ backgroundImage: `url(${review.image})` }}
+          // style={{ backgroundImage: `url(${review.image})` }}
         >
-          {!review.image && "IMG"}
+          {/* {!review.image && "IMG"} */}
         </div>
         <h5 className="font-serif font-bold text-xl text-earth-forest tracking-wide">
           {review.name}
         </h5>
         <p className="font-sans text-sm text-earth-deep/70 mt-1">
-          {review.role}
+          {/* {review.role} */}
         </p>
       </div>
     </div>
@@ -106,7 +106,7 @@ export default function Testimonials() {
 
           {/* Social Proof Text */}
           <div className="flex flex-col text-center md:text-left drop-shadow-sm">
-            <h3 className="text-3xl md:text-4xl font-serif font-bold text-earth-light">
+            <h3 className="text-3xl md:text-4xl font-seri f font-bold text-earth-light">
               Loved by 3,500+ Australians
             </h3>
             <p className="font-sans text-earth-light/80 font-medium mt-1">

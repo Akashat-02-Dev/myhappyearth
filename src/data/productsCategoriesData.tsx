@@ -5,6 +5,6 @@ export const productsCategories = [
   "Table Products",
   "Natura Dine",
   "Zero Waste",
-  "EcoServe",
+  "Eco-Serve",
   "Recycled Plastic",
 ];
