@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react';
 
 // Define the array of background images
 const bgImages = [
-  "/hero-bg.jpg",
+  "/hero-bg.png",
   "/hero-bg-2.jpg", // Add this to your public folder
-  "/hero-bg-3.jpg"  // Add this to your public folder
+  "/hero-bg-3.jpg",
+  "/hero-bg-4.png"  // Add this to your public folder
 ];
 
 const heroProducts = [
@@ -127,7 +128,7 @@ export default function Hero() {
         </div>
 
         {/* Right Column (Products) */}
-        <div className="w-full md:w-[55%] lg:w-[60%] xl:w-[62%] md:ml-auto p-6 sm:p-8 bg-earth-light rounded-[2rem] md:rounded-[3rem] shadow-xl">
+        {/* <div className="w-full md:w-[55%] lg:w-[60%] xl:w-[62%] md:ml-auto p-6 sm:p-8 bg-earth-light rounded-[2rem] md:rounded-[3rem] shadow-xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {heroProducts.map((product, index) => (
               <ProductCategoryItem 
@@ -139,7 +140,7 @@ export default function Hero() {
               />
             ))}
           </div>
-        </div>
+        </div> */}
 
       </div>
     </section>
