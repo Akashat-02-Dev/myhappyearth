@@ -49,14 +49,15 @@ export default function Navbar({
 
   const activeScrolled = isScrolled || forceScrolledState;
 
+  // UPDATED: Changed opacity to /50 and upgraded to backdrop-blur-lg for a premium frosted glass effect
   const navBackground = isLockedDark
-    ? "bg-earth-deep text-earth-light shadow-lg"
+    ? "bg-earth-deep/50 backdrop-blur-lg text-earth-light shadow-lg"
     : permanentInvert
       ? activeScrolled
-        ? "bg-earth-light/95 backdrop-blur-md text-earth-deep shadow-sm"
+        ? "bg-earth-light/50 backdrop-blur-lg text-earth-deep shadow-sm"
         : "bg-transparent text-earth-deep shadow-none"
       : activeScrolled
-        ? "bg-earth-deep/95 backdrop-blur-md text-earth-light shadow-lg"
+        ? "bg-earth-deep/50 backdrop-blur-lg text-earth-light shadow-lg"
         : invert
           ? "bg-transparent text-earth-deep shadow-none"
           : "bg-transparent text-earth-light shadow-none";
@@ -136,7 +137,7 @@ export default function Navbar({
               <div
                 className={`rounded-2xl shadow-xl py-2 flex flex-col overflow-hidden transition-colors duration-500 border ${
                   isLockedDark || activeScrolled
-                    ? "bg-earth-deep border-earth-light/10"
+                    ? "bg-earth-deep/60 backdrop-blur-lg border-earth-light/10" // Also updated dropdown to match
                     : invert
                       ? "bg-white/80 backdrop-blur-md border-earth-forest/10"
                       : "bg-white/10 backdrop-blur-md border-white/20"
@@ -146,7 +147,7 @@ export default function Navbar({
                   href="/contact?view=faq"
                   className={`px-5 py-3 text-sm font-semibold text-center transition-colors duration-300 ${
                     isLockedDark || activeScrolled
-                      ? "text-earth-light hover:bg-earth-forest"
+                      ? "text-earth-light hover:bg-earth-forest/80"
                       : invert
                         ? "text-earth-deep hover:bg-earth-light"
                         : "text-earth-light hover:bg-white/20"
