@@ -1,4 +1,5 @@
-// src/components/impact/HeroSection.tsx
+"use client";
+
 import Image from 'next/image';
 
 interface HeroSectionProps {
@@ -9,8 +10,10 @@ export default function HeroSection({ onOpenStory }: HeroSectionProps) {
   return (
     <section className="w-full min-h-screen flex flex-col md:flex-row bg-earth-light z-10">
       
-      {/* Mobile: takes 50vh to ensure it stays in frame. Desktop: fills its half naturally */}
-      <div className="relative w-full h-[50vh] md:h-auto md:flex-1">
+      {/* CRITICAL FIX: Changed from md:h-full/auto to md:h-screen to ensure 
+        the Next.js fill image always has a bounded parent height. 
+      */}
+      <div className="relative w-full h-[50vh] md:h-screen md:w-1/2">
         <Image
           src="/images/hero-woman.jpeg" 
           alt="My Happy Earth founder"
@@ -20,7 +23,7 @@ export default function HeroSection({ onOpenStory }: HeroSectionProps) {
         />
       </div>
 
-      <div className="w-full md:w-1/2 md:flex-1 px-8 py-16 md:px-12 lg:px-24 flex flex-col items-center justify-center text-center">
+      <div className="w-full md:w-1/2 min-h-[50vh] md:h-screen px-8 py-16 md:px-12 lg:px-24 flex flex-col items-center justify-center text-center">
         <div className="max-w-[480px]">
           <h1 className="font-sans font-extrabold text-5xl md:text-6xl text-earth-deep leading-tight mb-6 md:mb-8 mt-4 md:mt-0">
             OUR<br /> STORY

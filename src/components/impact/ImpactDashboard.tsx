@@ -1,4 +1,5 @@
-// src/components/impact/ImpactDashboard.tsx
+"use client";
+
 import { impactFeatures } from '@/data/impactData';
 
 interface ImpactDashboardProps {
@@ -10,7 +11,7 @@ export default function ImpactDashboard({ isStoryOpen, onCloseStory }: ImpactDas
   return (
     <div className="w-full pt-24 md:pt-32 pb-16 md:pb-24 px-6 md:px-12 lg:px-24 flex flex-col items-center justify-center relative min-h-screen">
       
-      {/* Mobile: Positioned inline above the title. Desktop: Positioned absolutely. */}
+      {/* Repositioned for mobile to prevent overlapping with the main title */}
       <div className="w-full max-w-[85rem] flex justify-start mb-8 md:absolute md:top-24 md:left-12 md:mb-0">
         <button 
           onClick={onCloseStory}
@@ -24,16 +25,19 @@ export default function ImpactDashboard({ isStoryOpen, onCloseStory }: ImpactDas
       </div>
 
       <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-sans font-extrabold text-center leading-tight mb-12 md:mb-20 drop-shadow-lg max-w-4xl text-earth-light">
-        Every Purchase Plants a Tree.<br className="hidden md:block" />
-        <span className="md:hidden"> </span>Every Product Saves the Planet.
+        Every Purchase Plants a Tree.
+        <br className="hidden md:block" />
+        {/* Safely inject space to prevent hydration text-mismatch exceptions */}
+        <span className="md:hidden">{' '}</span>
+        Every Product Saves the Planet.
       </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-10 md:gap-y-12 w-full max-w-[85rem] mb-20 md:mb-32">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-x-8 gap-y-10 md:gap-y-12 w-full max-w-[85rem] mb-20 md:mb-32">
         {impactFeatures.map((feature, index) => (
           <div key={index} className="flex flex-col items-center text-center text-earth-light group">
             <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-earth-light text-earth-deep flex items-center justify-center mb-4 md:mb-6 shadow-xl group-hover:scale-105 transition-transform duration-300">
-              {/* Ensures the nested SVG properly scales down on smaller devices */}
-              <div className="[&>svg]:w-10 [&>svg]:h-10 md:[&>svg]:w-12 md:[&>svg]:h-12 flex items-center justify-center">
+              {/* Ensures nested SVGs properly scale down on smaller devices */}
+              <div className="[&>svg]:w-8 [&>svg]:h-8 md:[&>svg]:w-12 md:[&>svg]:h-12 flex items-center justify-center">
                 {feature.icon}
               </div>
             </div>
