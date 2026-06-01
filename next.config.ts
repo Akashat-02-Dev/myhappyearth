@@ -6,14 +6,22 @@ const config = {
   images: {
     formats: ['image/avif', 'image/webp'], // Forces AVIF first!
     qualities: [75, 100],
-    remotePatterns: [
-{
+remotePatterns: [
+      {
         protocol: 'https',
-        hostname: '**', // The double asterisk allows ANY https domain
+        hostname: 'firebasestorage.googleapis.com',
       },
       {
-        protocol: 'http',
-        hostname: '**', // Allows ANY http domain
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'plus.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
       }
     ],
     dangerouslyAllowSVG: true, // Allows SVGs to be used with the <Image> component, but be cautious of untrusted sources
