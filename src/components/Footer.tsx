@@ -145,14 +145,12 @@ function SocialMedia() {
 
 export default function Footer() {
   const shopLinks = [
-    "Sustainable Bags", 
-    "Compostable Products", 
-    "Biodegradable Products", 
-    "Table Products", 
-    "Natura Dine", 
-    "Zero Waste", 
-    "EcoServe", 
-    "Recycled Plastic"
+  "Sustainable Bags",
+  "Biodegradable Products",
+  "Natura Dine",
+  "Bamboo",
+  "Recycled Plastic",
+  "Earth-Friendly"
   ];
   
   const companyLinks = ["Our Story", "Our Impact", "Blog", "Sustainability Report"];

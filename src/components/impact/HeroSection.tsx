@@ -29,7 +29,7 @@ export default function HeroSection({ onOpenStory }: HeroSectionProps) {
             OUR<br /> STORY
           </h1>
           <p className="font-sans font-medium text-base sm:text-lg md:text-xl text-earth-deep/80 leading-relaxed mb-8 md:mb-12">
-            Born from a love for Australia and a frustration with plastic waste, My Happy Earth is a promise for a cleaner, greener tomorrow.
+          Founded out of a deep respect for Australia’s natural heritage and a shared urgency to eliminate plastic waste, My Happy Earth provides sustainable, everyday solutions for a cleaner future.
           </p>
           
           <button 

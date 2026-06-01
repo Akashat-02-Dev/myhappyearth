@@ -107,11 +107,11 @@ export default function Testimonials() {
           {/* Social Proof Text */}
           <div className="flex flex-col text-center md:text-left drop-shadow-sm">
             <h3 className="text-3xl md:text-4xl font-seri f font-bold text-earth-light">
-              Loved by 3,500+ Australians
+              Loved by 50,000+ People Globally
             </h3>
-            <p className="font-sans text-earth-light/80 font-medium mt-1">
+            {/* <p className="font-sans text-earth-light/80 font-medium mt-1">
               3,500+ reviews
-            </p>
+            </p> */}
           </div>
 
         </div>

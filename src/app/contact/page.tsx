@@ -102,7 +102,7 @@ const ContactContent = () => {
           </section>
 
           {/* SECTION 2: Stacked Form Section */}
-          <section id="contact-form-section" className="relative w-full bg-earth-deep z-20 pb-20">
+          <section id="contact-form-section" className="relative w-full bg-earth-deep z-20 pb-0">
             
             {/* Back to top button */}
             <div className="absolute top-12 md:top-24 left-6 md:left-12 z-50">

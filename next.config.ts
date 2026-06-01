@@ -7,21 +7,25 @@ const config = {
     formats: ['image/avif', 'image/webp'], // Forces AVIF first!
     qualities: [75, 100],
 remotePatterns: [
-      {
+{
         protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
+        hostname: 'media.licdn.com', // Fixes the current LinkedIn image error
       },
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
+        hostname: 'images.unsplash.com', // Used in CategoryCard.tsx
       },
       {
         protocol: 'https',
-        hostname: 'plus.unsplash.com',
+        hostname: 'plus.unsplash.com', // Used in CategoryCard.tsx
       },
       {
         protocol: 'https',
-        hostname: 'placehold.co',
+        hostname: 'placehold.co', // Used in ProductsTab.tsx fallbacks
+      },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com', // Used for product images
       }
     ],
     dangerouslyAllowSVG: true, // Allows SVGs to be used with the <Image> component, but be cautious of untrusted sources

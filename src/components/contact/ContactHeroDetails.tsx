@@ -1,4 +1,4 @@
-import { heroAddressList, heroBusinessHours } from '@/data/contactInfo';
+import { heroAddressList} from '@/data/contactInfo';
 
 export default function ContactHeroDetails() {
   return (
@@ -15,12 +15,6 @@ export default function ContactHeroDetails() {
       
       {/* Separation line */}
       <div className="h-px w-24 bg-earth-sage/50 mb-6"></div>
-
-      {/* Business Hours Text */}
-      <p className="text-lg md:text-xl font-semibold drop-shadow-sm tracking-wide">
-        {heroBusinessHours}
-      </p>
-      
     </div>
   );
 }

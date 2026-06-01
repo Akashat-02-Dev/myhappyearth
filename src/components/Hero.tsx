@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 const bgImages = [
   "/hero-bg.png",
   "/hero-bg-2.jpg", // Add this to your public folder
-  "/hero-bg-3.jpg",
+  "/hero-bg-3.png",
   "/hero-bg-4.png"  // Add this to your public folder
 ];
 

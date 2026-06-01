@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react'; // <-- Imported Arrow icon
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -58,6 +59,19 @@ export default function BlogDetailPage() {
 
       <div className="flex-grow pt-36 pb-16 px-4 md:px-10 lg:px-16 flex flex-col items-center">
         <div className="max-w-[1200px] w-full">
+          
+          {/* --- NEW: BACK BUTTON --- */}
+          <div className="w-full flex justify-start mb-8 md:mb-10">
+            <Link
+              href="/impact"
+              className="inline-flex items-center gap-2 text-[#2E473D] hover:text-[#74876F] font-sans font-bold tracking-wide transition-colors duration-300 group"
+            >
+              <ArrowLeft className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-300" />
+              Back to Articles
+            </Link>
+          </div>
+          {/* ------------------------ */}
+
           <BlogDetailHeader 
             category={post.category} title={post.title} authorName={post.authorName} 
             authorImage={post.authorImage} date={post.date} readTime={post.readTime} 

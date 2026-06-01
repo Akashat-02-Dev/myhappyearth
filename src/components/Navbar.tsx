@@ -93,19 +93,19 @@ export default function Navbar({
             height={96}
             quality={100}
             priority
-            className={`w-auto h-8 md:h-10 lg:h-12 object-contain transition-all duration-300 ${isMobileMenuOpen ? 'brightness-0' : ''}`}
+            className={`w-auto h-8 md:h-10 lg:h-12 object-contain transition-all duration-300 ${isMobileMenuOpen ? 'brightness-100' : ''}`}
           />
           
           {/* Text/Tag Logo */}
-          <Image
+          {/* <Image
             src="/tag.png"
             alt="My Happy Earth Brand Text"
             width={300} // Set a safe base width for Next.js to optimize
             height={96}
             quality={100}
             priority
-            className={`w-auto h-6 md:h-8 lg:h-10 object-contain transition-all duration-300 ${isMobileMenuOpen ? 'brightness-0' : ''}`}
-          />
+            className={`w-auto h-6 md:h-8 lg:h-10 object-contain transition-all duration-300 ${isMobileMenuOpen ? 'brightness-0' : ''}`} */}
+          {/* /> */}
         </Link>
 
         {/* --- DESKTOP NAVIGATION --- */}
