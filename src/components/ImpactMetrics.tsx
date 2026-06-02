@@ -12,7 +12,7 @@ interface Metric {
 const metricsData: Metric[] = [
   {
     id: 1,
-    number: "500+",
+    number: "2500+",
     label: "Products Recycled",
     icon: (
       <svg className="w-10 h-10 md:w-12 md:h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
@@ -22,7 +22,7 @@ const metricsData: Metric[] = [
   },
   {
     id: 2,
-    number: "1,200+",
+    number: "50000+",
     label: "Trees Planted",
     icon: (
       <svg className="w-10 h-10 md:w-12 md:h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">

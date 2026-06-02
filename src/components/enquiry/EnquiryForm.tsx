@@ -2,17 +2,17 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation'; // <-- Added useRouter
 import FormInput from '@/components/ui/FormInput';
 import FormTextarea from '@/components/ui/FormTextarea';
 import { submitEnquiry } from '@/data/enquiryData';
-import { Send, CheckCircle2, Building2, User } from 'lucide-react';
+import { Send, CheckCircle2, Building2, User, ArrowLeft } from 'lucide-react'; // <-- Added ArrowLeft
 
 export default function EnquiryForm() {
   const searchParams = useSearchParams();
+  const router = useRouter(); // Initialize router for navigation
   const productParam = searchParams.get('product');
 
-  // UPDATED: Added 'enquiryType' and 'companyName' to the state
   const [formData, setFormData] = useState({
     enquiryType: 'Individual', // Default to Individual
     companyName: '',
@@ -66,12 +66,23 @@ export default function EnquiryForm() {
         <p className="text-[#344E41]/70 text-lg mb-8 max-w-md">
           Thank you for reaching out. A member of our team will review your message and respond shortly.
         </p>
-        <button 
-          onClick={() => setStatus('idle')} 
-          className="px-8 py-3.5 bg-[#588157] text-[#FAF3DD] font-bold rounded-2xl hover:bg-[#344E41] transition-colors shadow-md"
-        >
-          Send Another Message
-        </button>
+        <div className="flex flex-col sm:flex-row gap-4">
+          {/* Conditionally render Back to Product on success screen too */}
+          {productParam && (
+            <button 
+              onClick={() => router.back()} 
+              className="px-8 py-3.5 bg-transparent border-2 border-[#588157] text-[#588157] font-bold rounded-2xl hover:bg-[#588157]/10 transition-colors shadow-sm"
+            >
+              Back to Product
+            </button>
+          )}
+          <button 
+            onClick={() => setStatus('idle')} 
+            className="px-8 py-3.5 bg-[#588157] text-[#FAF3DD] font-bold rounded-2xl hover:bg-[#344E41] transition-colors shadow-md"
+          >
+            Send Another Message
+          </button>
+        </div>
       </div>
     );
   }
@@ -79,7 +90,7 @@ export default function EnquiryForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 p-2 md:p-8">
       
-      {/* THE FIX: Interactive Type Toggle */}
+      {/* Interactive Type Toggle */}
       <div className="flex bg-[#FAF3DD]/50 p-1.5 rounded-2xl w-full sm:w-fit border border-gray-100 shadow-sm mb-2">
         <button
           type="button"
@@ -152,13 +163,29 @@ export default function EnquiryForm() {
         placeholder="How can we help you today?" 
       />
 
-      <button 
-        type="submit" 
-        disabled={status === 'loading'}
-        className={`mt-4 flex items-center justify-center gap-2 w-full md:w-auto self-end px-12 py-4 bg-[#344E41] text-[#FAF3DD] rounded-2xl font-bold text-lg transition-all duration-300 shadow-xl ${status === 'loading' ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#588157] hover:-translate-y-1'}`}
-      >
-        {status === 'loading' ? 'Sending...' : 'Send Enquiry'} <Send className="w-5 h-5 ml-2" />
-      </button>
+      {/* --- Action Buttons Row --- */}
+      <div className="mt-4 flex flex-col-reverse md:flex-row items-center justify-end gap-4 w-full">
+        
+        {/* Conditionally Rendered Back Button */}
+        {productParam && (
+          <button 
+            type="button"
+            onClick={() => router.back()}
+            className="flex items-center justify-center gap-2 w-full md:w-auto px-8 py-4 bg-transparent border-2 border-[#344E41] text-[#344E41] rounded-2xl font-bold text-lg transition-all duration-300 shadow-sm hover:bg-[#344E41]/5 hover:-translate-y-1"
+          >
+            <ArrowLeft className="w-5 h-5" /> Back to Product
+          </button>
+        )}
+
+        <button 
+          type="submit" 
+          disabled={status === 'loading'}
+          className={`flex items-center justify-center gap-2 w-full md:w-auto px-12 py-4 bg-[#344E41] text-[#FAF3DD] rounded-2xl font-bold text-lg transition-all duration-300 shadow-xl ${status === 'loading' ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#588157] hover:-translate-y-1'}`}
+        >
+          {status === 'loading' ? 'Sending...' : 'Send Enquiry'} <Send className="w-5 h-5 ml-1" />
+        </button>
+      </div>
+
     </form>
   );
 }

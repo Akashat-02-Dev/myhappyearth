@@ -6,14 +6,12 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import CategoryCard from './CategoryCard';
 
 const CATEGORIES = [
-  "Sustainable Bags", 
-  "Compostable Products", 
-  "Biodegradable Products", 
-  "Table Products", 
-  "Natura Dine", 
-  "Zero Waste", 
-  "EcoServe", 
-  "Recycled Plastic"
+  "Sustainable Bags",
+  "Biodegradable Products",
+  "Natura Dine",
+  "Bamboo",
+  "Recycled Plastic",
+  "Earth-Friendly"
 ];
 
 export default function CategoryCarousel() {

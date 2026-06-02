@@ -8,7 +8,7 @@ export default function ProductsHero() {
       {/* Target Background Image (Generated specifically to match image_7.png) */}
       <div className="absolute inset-0 z-0">
         <Image 
-          src="/images/products-hero-bg.jpeg" // Placeholder for your image asset name
+          src="/images/products-hero-bg.png" // Placeholder for your image asset name
           alt="Eco-friendly Sustainable Collection flat lay"
           fill
           className="object-cover object-center"
