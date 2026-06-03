@@ -23,9 +23,12 @@ export default function Sidebar({
 }: SidebarProps) {
   
   // Use the dynamic materials from the Admin panel, or fallback to defaults
-  const materials = availableMaterials && availableMaterials.length > 0 
+  const rawMaterials = availableMaterials && availableMaterials.length > 0 
     ? availableMaterials 
     : ['Juco', 'Jute', 'Organic Cotton', 'Canvas', 'Hemp', 'Vegetable Starch'];
+
+  // Sort the materials alphabetically
+  const materials = [...rawMaterials].sort((a, b) => a.localeCompare(b));
   
   const certifications = [
     { name: 'Certified Organic', icon: <Leaf className="w-8 h-8 text-[#6F9B69]" /> },

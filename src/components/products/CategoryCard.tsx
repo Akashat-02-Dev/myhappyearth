@@ -6,15 +6,17 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 // Premium Unsplash images for your categories.
+// src/components/products/CategoryCard.tsx (or wherever this is located)
+
 const CATEGORY_IMAGES: Record<string, string> = {
   "Sustainable Bags": "https://plus.unsplash.com/premium_photo-1672977345139-54ca2d1db475?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "Compostable Products": "https://images.unsplash.com/photo-1602925607562-7c8055e642bd?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "Biodegradable Products": "https://images.unsplash.com/photo-1635719917567-d9aa1a454ee4?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "Table Products": "https://images.unsplash.com/photo-1723934603562-9a99eeb6bb23?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "Natura Dine": "https://images.unsplash.com/photo-1708893490503-7aeeb38f638e?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "Zero Waste": "https://images.unsplash.com/photo-1633878353628-5fc8b983325c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "Eco-Serve": "https://images.unsplash.com/photo-1648587456176-4969b0124b12?q=80&w=1259&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "Recycled Plastic": "https://images.unsplash.com/photo-1683777072528-1caf12cb1e37?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  "Recycled Plastic": "https://images.unsplash.com/photo-1683777072528-1caf12cb1e37?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  
+  // Updated to dynamically generated "Coming Soon" placeholders matching your brand colors
+  "Earth-Friendly": "https://placehold.co/600x800/FAF3DD/344E41?text=Coming+Soon",
+  "Bamboo": "https://placehold.co/600x800/FAF3DD/344E41?text=Coming+Soon"
 };
 
 interface CategoryCardProps {

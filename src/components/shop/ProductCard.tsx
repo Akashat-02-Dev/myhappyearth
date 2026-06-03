@@ -23,11 +23,14 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const rawImageUrl = Array.isArray(product.imageUrl) ? product.imageUrl[0] : product.imageUrl;
   
+  // Brand-colored placeholder
+  const fallbackImage = "https://placehold.co/600x600/FAF3DD/344E41?text=No+Image";
+
   const safeImageUrl = rawImageUrl && rawImageUrl.trim() !== '' 
     ? rawImageUrl 
-    : '/images/blog/beach-sunset.jpg'; 
+    : fallbackImage; 
 
-  const displayUrl = imageFailed ? '/images/blog/beach-sunset.jpg' : safeImageUrl;
+  const displayUrl = imageFailed ? fallbackImage : safeImageUrl;
 
   return (
     <div className="bg-earth-forest p-6 rounded-[2rem] shadow-xl flex flex-col gap-5 relative group transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl h-full border border-earth-light/5">
@@ -39,7 +42,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             src={displayUrl} 
             alt={product.name || 'Product'} 
             fill
-            // Removed unoptimized={true} so Next.js can shrink the image payloads!
+            unoptimized // THIS IS THE CRITICAL FIX: It forces the browser to load directly from Firebase
             sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
             className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-110"
             onError={() => {
