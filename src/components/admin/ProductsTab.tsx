@@ -2,9 +2,9 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { getProducts, addProduct, updateProduct, deleteProduct, uploadProductImage, Product } from '@/data/shopData';
+import { getProducts, addProduct, updateProduct, deleteProduct, Product } from '@/data/shopData';
 import { getShopSettings } from '@/data/settingsData';
-import { Edit2, Trash2, Plus, X, Loader2, UploadCloud, Search } from 'lucide-react';
+import { Edit2, Trash2, Plus, X, Loader2, Link as LinkIcon, Search } from 'lucide-react';
 
 const STANDARD_SIZES: string[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', 'One Size'];
 
@@ -14,15 +14,14 @@ export default function ProductsTab() {
   const [materials, setMaterials] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   
-  // NEW: Search State
   const [searchQuery, setSearchQuery] = useState<string>('');
   
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState<Partial<Product>>({});
   
-  const [imageFiles, setImageFiles] = useState<(File | null)[]>([null, null, null]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>(['', '', '']);
+  // NEW: State to hold text-based URLs instead of File objects
+  const [imageUrls, setImageUrls] = useState<string[]>(['', '', '']);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   useEffect(() => {
@@ -68,23 +67,17 @@ export default function ProductsTab() {
     if (product) {
       const existingUrls: string[] = product.imageUrls ? [...product.imageUrls] : [product.imageUrl || '', '', ''];
       while (existingUrls.length < 3) existingUrls.push('');
-      setImagePreviews(existingUrls.slice(0, 3));
+      setImageUrls(existingUrls.slice(0, 3));
     } else {
-      setImagePreviews(['', '', '']);
+      setImageUrls(['', '', '']);
     }
-    setImageFiles([null, null, null]);
     setIsModalOpen(true);
   };
 
-  const handleImageChange = (index: number, file: File | null) => {
-    if (!file) return;
-    const newFiles = [...imageFiles];
-    newFiles[index] = file;
-    setImageFiles(newFiles);
-    
-    const newPreviews = [...imagePreviews];
-    newPreviews[index] = URL.createObjectURL(file);
-    setImagePreviews(newPreviews);
+  const handleUrlChange = (index: number, url: string) => {
+    const newUrls = [...imageUrls];
+    newUrls[index] = url;
+    setImageUrls(newUrls);
   };
 
   const toggleMaterial = (mat: string) => {
@@ -111,58 +104,33 @@ export default function ProductsTab() {
 
     try {
       let productId = editingProduct?.id;
-      let currentUrls = [...imagePreviews];
 
-      if (!productId) {
-        productId = await addProduct(formData as Omit<Product, 'id'>);
-      }
-
-      for (let i = 0; i < 3; i++) {
-        if (imageFiles[i]) {
-          try {
-            const uploadedUrl = await Promise.race([
-              uploadProductImage(productId, i, imageFiles[i]!),
-              new Promise<string>((_, reject) => 
-                setTimeout(() => reject(new Error("FIREBASE_TIMEOUT")), 60000)
-              )
-            ]);
-            currentUrls[i] = uploadedUrl;
-          } catch (err: any) {
-            if (err.message === "FIREBASE_TIMEOUT") {
-              alert("Image upload timed out. Check your connection or file size.");
-              throw new Error("Upload aborted due to timeout.");
-            }
-            throw err;
-          }
-        }
-      }
+      // Filter out empty URL strings
+      const cleanedUrls = imageUrls.filter(url => url.trim() !== '');
 
       const updateData = {
         ...formData,
-        imageUrls: currentUrls,
-        imageUrl: currentUrls[0] || '',
+        imageUrls: cleanedUrls,
+        imageUrl: cleanedUrls[0] || '', // Use the first valid URL as main
         material: formData.materials?.[0] || ''
       };
 
       if (editingProduct && editingProduct.id) {
         await updateProduct(editingProduct.id, updateData);
       } else {
-        await updateProduct(productId, updateData);
+        await addProduct(updateData as Omit<Product, 'id'>);
       }
 
       await fetchData(); 
       setIsModalOpen(false);
     } catch (error) {
       console.error(error);
-      if (error instanceof Error && error.message !== "Upload aborted due to timeout.") {
-        alert("Error saving product to database.");
-      }
+      alert("Error saving product to database.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  // NEW: Real-time filtering logic
   const filteredProducts = products.filter((product) => {
     if (!searchQuery) return true;
     const lowerQuery = searchQuery.toLowerCase();
@@ -190,8 +158,6 @@ export default function ProductsTab() {
         <h2 className="text-xl font-bold text-[#063c60]">Product Inventory</h2>
         
         <div className="flex flex-col sm:flex-row items-center w-full md:w-auto gap-3">
-          
-          {/* SEARCH INPUT */}
           <div className="relative w-full sm:w-64 lg:w-80">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-gray-400" />
@@ -294,25 +260,41 @@ export default function ProductsTab() {
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] border border-white/20">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
               <h2 className="text-2xl font-bold text-[#063c60]">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-[#ec6917] hover:bg-orange-50 rounded-full transition-colors duration-300"><X className="w-6 h-6" /></button>
+              <button type="button" onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-[#ec6917] hover:bg-orange-50 rounded-full transition-colors duration-300"><X className="w-6 h-6" /></button>
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-5">
               
+              {/* NEW IMAGE URL SECTION */}
               <div className="md:col-span-2 mb-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Product Images (Upload 3)</label>
-                <div className="grid grid-cols-3 gap-4">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Image Paths (e.g., <span className="text-[#ec6917]">/images/products/bag.jpg</span>)
+                </label>
+                <div className="flex flex-col gap-4">
                   {[0, 1, 2].map((index) => (
-                    <div key={index} className="relative w-full aspect-square rounded-2xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center overflow-hidden bg-white hover:bg-gray-50 hover:border-[#ec6917] transition-all duration-300 group cursor-pointer shadow-sm">
-                      {imagePreviews[index] ? (
-                        <img src={imagePreviews[index]} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="flex flex-col items-center gap-1 text-gray-400 group-hover:text-[#ec6917] transition-colors">
-                          <UploadCloud className="w-8 h-8" />
-                          <span className="text-xs font-semibold">Image {index + 1}</span>
+                    <div key={index} className="flex gap-4 items-center bg-gray-50/50 p-3 rounded-2xl border border-gray-100">
+                      <div className="flex flex-col flex-grow relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <LinkIcon className="h-4 w-4 text-gray-400" />
                         </div>
-                      )}
-                      <input type="file" accept="image/*" onChange={(e) => handleImageChange(index, e.target.files?.[0] || null)} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                        <input 
+                          type="text" 
+                          placeholder={`Image ${index + 1} URL or Path`} 
+                          value={imageUrls[index]} 
+                          onChange={(e) => handleUrlChange(index, e.target.value)} 
+                          className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#ec6917] focus:ring-1 focus:ring-[#ec6917] transition-all bg-white" 
+                        />
+                      </div>
+                      
+                      {/* Image Preview Thumbnail */}
+                      <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200">
+                        <img 
+                          src={imageUrls[index] || 'https://placehold.co/100x100/e2e8f0/64748b?text=Empty'} 
+                          alt={`Preview ${index + 1}`} 
+                          className="w-full h-full object-cover" 
+                          onError={(e) => (e.currentTarget.src = 'https://placehold.co/100x100/fecaca/ef4444?text=Error')} 
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -397,7 +379,7 @@ export default function ProductsTab() {
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 rounded-full font-semibold text-gray-500 hover:bg-gray-100 transition-colors duration-300">Cancel</button>
                 <button type="submit" disabled={isSaving} className="px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-r from-[#063c60] to-[#084b78] hover:shadow-lg transition-all duration-300 disabled:opacity-70 flex items-center gap-2">
                   {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {isSaving ? 'Uploading Images & Saving...' : 'Save Product'}
+                  {isSaving ? 'Saving...' : 'Save Product'}
                 </button>
               </div>
             </form>

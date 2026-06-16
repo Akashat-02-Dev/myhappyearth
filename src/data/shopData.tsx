@@ -1,7 +1,6 @@
 // src/data/shopData.tsx
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '@/lib/firebase'; 
+import { db } from '@/lib/firebase'; 
 
 export interface Product {
   id?: string;
@@ -13,9 +12,9 @@ export interface Product {
   imageUrls?: string[]; 
   badge: string;
   category: string;
-  material: string; // Kept for legacy database compatibility
-  materials?: string[]; // NEW: Array for multiple materials
-  sizes?: string[]; // NEW: Array for available sizes
+  material: string; 
+  materials?: string[]; 
+  sizes?: string[]; 
   stock?: number | ''; 
 }
 
@@ -60,12 +59,4 @@ export async function deleteProduct(id: string) {
     throw error;
   }
 }
-
-export async function uploadProductImage(productId: string, index: number, file: File): Promise<string> {
-  const fileExtension = file.name.split('.').pop();
-  const fileName = `products/${productId}/image_${index}_${Date.now()}.${fileExtension}`;
-  const storageRef = ref(storage, fileName);
-  
-  await uploadBytes(storageRef, file);
-  return await getDownloadURL(storageRef);
-}
+// Removed uploadProductImage completely.
