@@ -9,7 +9,7 @@ export interface SidebarProps {
   setMaxPrice: (val: number) => void;
   selectedMaterials: string[];
   setSelectedMaterials: (val: string[]) => void;
-  availableMaterials: string[]; 
+  availableMaterials: string[];
 }
 
 export default function Sidebar({
@@ -22,14 +22,9 @@ export default function Sidebar({
   availableMaterials
 }: SidebarProps) {
   
-  // Use the dynamic materials from the Admin panel, or fallback to defaults
-  const rawMaterials = availableMaterials && availableMaterials.length > 0 
-    ? availableMaterials 
-    : ['Juco', 'Jute', 'Organic Cotton', 'Canvas', 'Hemp', 'Vegetable Starch'];
+  // Use the exact dynamic materials calculated by the parent component
+  const materials = [...(availableMaterials || [])].sort((a, b) => a.localeCompare(b));
 
-  // Sort the materials alphabetically
-  const materials = [...rawMaterials].sort((a, b) => a.localeCompare(b));
-  
   const certifications = [
     { name: 'Certified Organic', icon: <Leaf className="w-8 h-8 text-[#6F9B69]" /> },
     { name: 'Ocean Friendly', icon: <Waves className="w-8 h-8 text-[#3B82F6]" /> },
@@ -68,19 +63,24 @@ export default function Sidebar({
         {/* MATERIAL Checkboxes */}
         <div className="flex flex-col gap-4">
           <h3 className="font-bold text-gray-800">Material</h3>
-          <div className="flex flex-col gap-3">
-            {materials.map((material) => (
-              <label key={material} className="flex items-center gap-3 cursor-pointer group">
-                <input 
-                  type="checkbox" 
-                  checked={selectedMaterials.includes(material)} 
-                  onChange={() => toggleMaterial(material)}
-                  className="w-5 h-5 border-gray-300 rounded text-[#6F9B69] focus:ring-[#6F9B69] transition duration-200 cursor-pointer" 
-                />
-                <span className="text-sm font-medium text-gray-700 transition duration-200 group-hover:text-[#6F9B69]">{material}</span>
-              </label>
-            ))}
-          </div>
+          
+          {materials.length > 0 ? (
+            <div className="flex flex-col gap-3">
+              {materials.map((material) => (
+                <label key={material} className="flex items-center gap-3 cursor-pointer group">
+                  <input 
+                    type="checkbox" 
+                    checked={selectedMaterials.includes(material)} 
+                    onChange={() => toggleMaterial(material)}
+                    className="w-5 h-5 border-gray-300 rounded text-[#6F9B69] focus:ring-[#6F9B69] transition duration-200 cursor-pointer" 
+                  />
+                  <span className="text-sm font-medium text-gray-700 transition duration-200 group-hover:text-[#6F9B69]">{material}</span>
+                </label>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400 italic">No specific materials for this category.</p>
+          )}
         </div>
 
         <div className="w-full h-px bg-gray-100"></div>

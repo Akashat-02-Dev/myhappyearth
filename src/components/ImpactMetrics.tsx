@@ -53,10 +53,11 @@ const metricsData: Metric[] = [
 ];
 
 const ImpactMetrics: FC = () => {
+  // Duplicating the array ensures the infinite scroll has enough content to loop seamlessly
   const extendedMetrics = [...metricsData, ...metricsData];
 
   return (
-    <section className="w-full bg-[#FAF3DD] text-[#588157] py-3 md:py-4 overflow-hidden flex items-center border-y border-[#FAF3DD]/10">
+    <section className="w-full bg-[#FAF3DD] text-[#588157] py-5 md:py-6 overflow-hidden flex items-center border-y border-[#FAF3DD]/10">
       
       <style>{`
         @keyframes marquee {
@@ -66,7 +67,8 @@ const ImpactMetrics: FC = () => {
         .animate-marquee {
           display: flex;
           width: max-content;
-          animation: marquee 25s linear infinite;
+          /* Slightly increased animation time for smoother reading */
+          animation: marquee 30s linear infinite; 
         }
         .animate-marquee:hover {
           animation-play-state: paused;
@@ -77,7 +79,8 @@ const ImpactMetrics: FC = () => {
         {extendedMetrics.map((metric, index) => (
           <div
             key={index}
-            className="w-[100vw] md:w-[33.333vw] flex-shrink-0 flex items-center justify-center gap-3 md:gap-5 px-4 cursor-default"
+            // Fix: Removed hardcoded vw widths. Used dynamic spacing with px-8 and px-16 instead.
+            className="flex-shrink-0 flex items-center justify-center gap-3 md:gap-5 px-8 sm:px-12 md:px-16 cursor-default"
           >
             <div className="opacity-90 flex items-center justify-center shrink-0">
               {metric.icon}
@@ -87,8 +90,8 @@ const ImpactMetrics: FC = () => {
               <span className="font-sans font-extrabold text-3xl md:text-5xl lg:text-6xl tracking-tight leading-none">
                 {metric.number}
               </span>
-              {/* Noticeably increased label sizes here (text-sm -> text-base -> text-lg -> text-xl) */}
-              <span className="font-sans font-bold text-m m:text-base md:text-xl lg:text-2xl tracking-widest uppercase opacity-90 whitespace-nowrap leading-none">
+              {/* Fix: Corrected invalid Tailwind classes (text-m -> text-sm, m:text-base -> sm:text-base) */}
+              <span className="font-sans font-bold text-sm sm:text-base md:text-xl lg:text-2xl tracking-widest uppercase opacity-90 whitespace-nowrap leading-none">
                 {metric.label}
               </span>
             </div>

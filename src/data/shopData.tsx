@@ -11,7 +11,8 @@ export interface Product {
   imageUrl: string; 
   imageUrls?: string[]; 
   badge: string;
-  category: string;
+  category: string; // Legacy fallback
+  categories?: string[]; // NEW: Multi-category support
   material: string; 
   materials?: string[]; 
   sizes?: string[]; 
@@ -59,4 +60,3 @@ export async function deleteProduct(id: string) {
     throw error;
   }
 }
-// Removed uploadProductImage completely.

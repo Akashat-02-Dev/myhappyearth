@@ -22,11 +22,12 @@ export default function ProductsPage() {
       {/* Component 1: Products Hero Section */}
       <ProductsHero />
 
+      {/* Component 3: Split CTA Journey Section */}
+      <OurJourneySection />
+      
       {/* Component 2: Products Categories Grid */}
       <ProductsCategoriesSection />
 
-      {/* Component 3: Split CTA Journey Section */}
-      <OurJourneySection />
 
       {/* Component 4: Standard Footer */}
       <Footer />

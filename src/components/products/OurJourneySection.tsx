@@ -1,40 +1,66 @@
+"use client";
+
 import React from 'react';
-import { journeyPanels } from '@/data/OurJourneyData';
 import JourneyCtaPanel from './JourneyCtaPanel';
+
+// You can move this data back to a data file later, 
+// but keeping it here makes the new "Paths" concept easy to manage.
+const journeyPaths = [
+  {
+    id: "path-1",
+    pathLabel: "Path 1",
+    icon: "🌱",
+    title: "Everyday Earth",
+    subtitle: "Small swaps for your daily life",
+    buttonText: "Explore Personal Shop",
+    linkUrl: "/products/personal", // Update with your actual route
+    imageUrl: "/images/products/bag-front.jpg", // Replace with an actual B2C image
+    theme: "light" as const,
+  },
+  {
+    id: "path-2",
+    pathLabel: "Path 2",
+    icon: "🌏",
+    title: "Earth at Scale",
+    subtitle: "Sustainability for your whole operation",
+    buttonText: "Explore Commercial Shop",
+    linkUrl: "/products/commercial", // Update with your actual route
+    imageUrl: "/images/products/bulk-boxes.jpg", // Replace with an actual B2B image
+    theme: "dark" as const,
+  }
+];
 
 export default function OurJourneySection() {
   return (
-    <section className="relative py-24 px-6 md:px-12 lg:px-24 bg-cover bg-center bg-fixed"
-    style={{ backgroundImage: "url('/images/journey-bg.jpg')" }}
+    <section 
+      className="relative py-24 px-6 md:px-12 lg:px-24 bg-cover bg-center bg-fixed bg-[#FAF3DD]"
+      style={{ backgroundImage: "url('/images/journey-bg.jpg')" }}
     >
-      <div className="container mx-auto px-6 max-w-[1200px]">
+      {/* Background Overlay for readability if using a background image */}
+      <div className="absolute inset-0 bg-[#FAF3DD]/50 backdrop-blur-sm"></div>
+
+      <div className="container relative mx-auto px-4 max-w-[1200px] z-10">
         
-        {/* HEADER SECTION: Centered Logo and Tagline */}
-        <div className="text-center mb-16 md:mb-20 flex flex-col items-center">
-          <div className="text-earth-light flex items-center gap-2 text-3xl md:text-4xl font-sans group cursor-pointer drop-shadow-sm">
-            <span className="text-earth-light group-hover:rotate-12 transition-transform duration-300">🌿</span> 
-            <span className="text-4xl md:text-5xl lg:text-6xl font-serif font-extrabold group-hover:text-earth-green-deep/70 transition-colors duration-300">My Happy Earth</span>
+        {/* HEADER SECTION */}
+        <div className="text-center mb-16 flex flex-col items-center">
+          <span className="text-[#A3B18A] font-bold tracking-widest uppercase text-sm mb-3">Choose Your Experience</span>
+          <div className="flex items-center gap-3 text-4xl md:text-5xl lg:text-6xl font-serif font-extrabold text-[#344E41] group cursor-pointer drop-shadow-sm">
+            <span className="group-hover:rotate-12 transition-transform duration-300">🌿</span> 
+            <span className="group-hover:text-[#A3B18A] transition-colors duration-300">My Happy Earth</span>
           </div>
-          <p className="font-serif font-medium text-lg md:text-xl lg:text-2xl text-earth-light mt-2">For Individuals and Businesses</p>
+          <p className="font-sans font-medium text-lg md:text-xl text-[#344E41]/70 mt-4 max-w-2xl">
+            Whether you are making sustainable choices for your home, or outfitting an entire enterprise, we have a path for you.
+          </p>
         </div>
 
-        {/* SPLIT CTA PANELS */}
-        {/* Uses a grid that stacks on mobile and splits into two perfect halves on larger screens */}
-        <div className="grid grid-cols-1 bg-earth-light md:grid-cols-2 gap-0 overflow-hidden rounded-2xl shadow-2xl">
-          
-          {journeyPanels.map((panel, index) => (
+        {/* PATH PANELS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+          {journeyPaths.map((panel) => (
             <JourneyCtaPanel 
-              key={index}
-              bgColor={panel.bgColor}
-              imageUrl={panel.imageUrl}
-              textOverlay={panel.title}
-              buttonText={panel.buttonText}
-              buttonStyle={panel.buttonStyle}
-              isOutlined={panel.isOutlined}
-              linkUrl={panel.linkUrl}
+              key={panel.id}
+              {...panel}
             />
           ))}
-
         </div>
         
       </div>

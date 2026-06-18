@@ -13,14 +13,10 @@ export default function ProductsTab() {
   const [categories, setCategories] = useState<string[]>([]);
   const [materials, setMaterials] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  
   const [searchQuery, setSearchQuery] = useState<string>('');
-  
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState<Partial<Product>>({});
-  
-  // NEW: State to hold text-based URLs instead of File objects
   const [imageUrls, setImageUrls] = useState<string[]>(['', '', '']);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -53,11 +49,13 @@ export default function ProductsTab() {
     setEditingProduct(product);
     
     const initialMaterials: string[] = product?.materials || (product?.material ? [product.material] : []);
+    const initialCategories: string[] = product?.categories || (product?.category ? [product.category] : []);
     const initialSizes: string[] = product?.sizes || [];
 
     setFormData(product || {
       name: '', description: '', price: '', rating: 5, imageUrl: '', badge: '', 
-      category: categories[0] || '', 
+      category: '', 
+      categories: initialCategories, // NEW
       material: '', 
       materials: initialMaterials,
       sizes: initialSizes,
@@ -82,20 +80,18 @@ export default function ProductsTab() {
 
   const toggleMaterial = (mat: string) => {
     const current: string[] = formData.materials || [];
-    if (current.includes(mat)) {
-      setFormData({ ...formData, materials: current.filter((m: string) => m !== mat) });
-    } else {
-      setFormData({ ...formData, materials: [...current, mat] });
-    }
+    setFormData({ ...formData, materials: current.includes(mat) ? current.filter(m => m !== mat) : [...current, mat] });
   };
 
   const toggleSize = (size: string) => {
     const current: string[] = formData.sizes || [];
-    if (current.includes(size)) {
-      setFormData({ ...formData, sizes: current.filter((s: string) => s !== size) });
-    } else {
-      setFormData({ ...formData, sizes: [...current, size] });
-    }
+    setFormData({ ...formData, sizes: current.includes(size) ? current.filter(s => s !== size) : [...current, size] });
+  };
+
+  // NEW: Toggle Category
+  const toggleCategory = (cat: string) => {
+    const current: string[] = formData.categories || [];
+    setFormData({ ...formData, categories: current.includes(cat) ? current.filter(c => c !== cat) : [...current, cat] });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,16 +99,14 @@ export default function ProductsTab() {
     setIsSaving(true);
 
     try {
-      let productId = editingProduct?.id;
-
-      // Filter out empty URL strings
       const cleanedUrls = imageUrls.filter(url => url.trim() !== '');
 
       const updateData = {
         ...formData,
         imageUrls: cleanedUrls,
-        imageUrl: cleanedUrls[0] || '', // Use the first valid URL as main
-        material: formData.materials?.[0] || ''
+        imageUrl: cleanedUrls[0] || '', 
+        material: formData.materials?.[0] || '',
+        category: formData.categories?.[0] || '' // Fallback for legacy database structure
       };
 
       if (editingProduct && editingProduct.id) {
@@ -134,29 +128,21 @@ export default function ProductsTab() {
   const filteredProducts = products.filter((product) => {
     if (!searchQuery) return true;
     const lowerQuery = searchQuery.toLowerCase();
+    const catSearch = product.categories?.join(' ').toLowerCase() || product.category?.toLowerCase() || '';
+    
     return (
       product.name?.toLowerCase().includes(lowerQuery) ||
-      product.category?.toLowerCase().includes(lowerQuery) ||
+      catSearch.includes(lowerQuery) ||
       product.description?.toLowerCase().includes(lowerQuery)
     );
   });
 
-  if (loading) {
-    return (
-      <div className="w-full py-20 flex flex-col items-center justify-center text-gray-400 gap-3">
-        <Loader2 className="w-8 h-8 animate-spin text-[#063c60]" />
-        <p className="font-medium text-[#063c60]">Loading inventory data...</p>
-      </div>
-    );
-  }
+  if (loading) return <div className="py-20 flex justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#063c60]" /></div>;
 
   return (
     <div className="flex flex-col gap-6">
-      
-      {/* HEADER WITH SEARCH BAR AND ADD BUTTON */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h2 className="text-xl font-bold text-[#063c60]">Product Inventory</h2>
-        
         <div className="flex flex-col sm:flex-row items-center w-full md:w-auto gap-3">
           <div className="relative w-full sm:w-64 lg:w-80">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -170,7 +156,6 @@ export default function ProductsTab() {
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-full text-sm outline-none focus:border-[#ec6917] focus:ring-1 focus:ring-[#ec6917] transition-all bg-white shadow-sm"
             />
           </div>
-
           <button onClick={() => openModal()} className="flex shrink-0 items-center justify-center w-full sm:w-auto gap-2 bg-gradient-to-r from-[#063c60] to-[#084b78] text-white px-5 py-2.5 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
             <Plus className="w-5 h-5" /> Add Product
           </button>
@@ -182,79 +167,54 @@ export default function ProductsTab() {
           <thead>
             <tr className="bg-gray-50/50 text-gray-500 border-b border-gray-100">
               <th className="p-5 font-semibold">Product Info</th>
-              <th className="p-5 font-semibold">Category</th>
+              <th className="p-5 font-semibold">Categories</th>
               <th className="p-5 font-semibold">Specs (Materials & Sizes)</th>
               <th className="p-5 font-semibold">Price & Stock</th>
               <th className="p-5 font-semibold text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product: Product) => {
-                const activeMaterials: string[] = product.materials?.length ? product.materials : (product.material ? [product.material] : []);
-                const activeSizes: string[] = product.sizes || [];
-                
-                return (
-                <tr key={product.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                  <td className="p-5 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200 shadow-sm">
-                       <img 
-                         src={(product.imageUrls && product.imageUrls[0]) || product.imageUrl || 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'} 
-                         alt={product.name || "Product Image"} 
-                         className="w-full h-full object-cover" 
-                         onError={(e) => (e.currentTarget.src = 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image')} 
-                       />
-                    </div>
-                    <div>
-                      <div className="font-bold text-[#063c60]">{product.name}</div>
-                      <div className="text-sm text-gray-500 truncate max-w-[150px]">{product.description}</div>
-                    </div>
-                  </td>
-                  <td className="p-5"><span className="bg-blue-50/80 text-[#063c60] px-3 py-1 rounded-full text-xs font-bold border border-blue-100">{product.category}</span></td>
-                  
-                  <td className="p-5">
-                    <div className="flex flex-wrap gap-1 mb-1.5 max-w-[200px]">
-                      {activeMaterials.map((m: string) => (
-                        <span key={m} className="bg-gray-100 text-[#063c60] px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap">{m}</span>
-                      ))}
-                    </div>
-                    <div className="flex flex-wrap gap-1 max-w-[200px]">
-                      {activeSizes.map((s: string) => (
-                        <span key={s} className="border border-[#ec6917] text-[#ec6917] bg-white px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap">{s}</span>
-                      ))}
-                    </div>
-                  </td>
-                  
-                  <td className="p-5">
-                    <div className="font-medium text-gray-900">{product.price}</div>
-                    <div className="text-xs font-semibold text-gray-500 mt-1">
-                      Stock: {product.stock !== undefined && product.stock !== '' ? product.stock : 'Unlimited'}
-                    </div>
-                  </td>
-                  <td className="p-5 text-right">
-                    <div className="flex justify-end gap-2">
-                      <button onClick={() => openModal(product)} className="p-2 text-[#063c60] hover:bg-blue-50 rounded-xl transition-colors"><Edit2 className="w-5 h-5" /></button>
-                      <button onClick={() => handleDelete(product.id)} className="p-2 text-[#ec6917] hover:bg-orange-50 rounded-xl transition-colors"><Trash2 className="w-5 h-5" /></button>
-                    </div>
-                  </td>
-                </tr>
-              )})
-            ) : (
-              <tr>
-                <td colSpan={5} className="p-10 text-center text-gray-500 bg-gray-50/50">
-                  <div className="flex flex-col items-center justify-center gap-2">
-                    <Search className="w-8 h-8 text-gray-300" />
-                    <p className="font-medium">No products found matching "{searchQuery}"</p>
-                    <button onClick={() => setSearchQuery('')} className="text-sm text-[#ec6917] hover:underline mt-1">Clear search</button>
+            {filteredProducts.map((product: Product) => {
+              const activeMaterials = product.materials?.length ? product.materials : (product.material ? [product.material] : []);
+              const activeCategories = product.categories?.length ? product.categories : (product.category ? [product.category] : []);
+              const activeSizes = product.sizes || [];
+              
+              return (
+              <tr key={product.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                <td className="p-5 flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200 shadow-sm">
+                     <img src={(product.imageUrls && product.imageUrls[0]) || product.imageUrl || 'https://placehold.co/400'} alt={product.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-[#063c60]">{product.name}</div>
+                    <div className="text-sm text-gray-500 truncate max-w-[150px]">{product.description}</div>
+                  </div>
+                </td>
+                <td className="p-5">
+                  <div className="flex flex-wrap gap-1 max-w-[200px]">
+                    {activeCategories.map(c => <span key={c} className="bg-blue-50/80 text-[#063c60] px-2 py-0.5 rounded-full text-[10px] font-bold border border-blue-100">{c}</span>)}
+                  </div>
+                </td>
+                <td className="p-5">
+                  <div className="flex flex-wrap gap-1 mb-1.5 max-w-[200px]">{activeMaterials.map(m => <span key={m} className="bg-gray-100 text-[#063c60] px-2 py-0.5 rounded-md text-[10px] font-bold">{m}</span>)}</div>
+                  <div className="flex flex-wrap gap-1 max-w-[200px]">{activeSizes.map(s => <span key={s} className="border border-[#ec6917] text-[#ec6917] bg-white px-2 py-0.5 rounded-md text-[10px] font-bold">{s}</span>)}</div>
+                </td>
+                <td className="p-5">
+                  <div className="font-medium text-gray-900">{product.price}</div>
+                  <div className="text-xs font-semibold text-gray-500 mt-1">Stock: {product.stock !== undefined && product.stock !== '' ? product.stock : 'Unlimited'}</div>
+                </td>
+                <td className="p-5 text-right">
+                  <div className="flex justify-end gap-2">
+                    <button onClick={() => openModal(product)} className="p-2 text-[#063c60] hover:bg-blue-50 rounded-xl transition-colors"><Edit2 className="w-5 h-5" /></button>
+                    <button onClick={() => handleDelete(product.id)} className="p-2 text-[#ec6917] hover:bg-orange-50 rounded-xl transition-colors"><Trash2 className="w-5 h-5" /></button>
                   </div>
                 </td>
               </tr>
-            )}
+            )})}
           </tbody>
         </table>
       </div>
 
-      {/* Editor Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300">
           <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] border border-white/20">
@@ -264,11 +224,9 @@ export default function ProductsTab() {
             </div>
             
             <form onSubmit={handleSubmit} className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-5">
-              
-              {/* NEW IMAGE URL SECTION */}
               <div className="md:col-span-2 mb-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Image Paths (e.g., <span className="text-[#ec6917]">/images/products/bag.jpg</span>)
+                  Image Paths (e.g., <span className="text-[#ec6917]">/product_images/bag.webp</span>)
                 </label>
                 <div className="flex flex-col gap-4">
                   {[0, 1, 2].map((index) => (
@@ -277,23 +235,10 @@ export default function ProductsTab() {
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                           <LinkIcon className="h-4 w-4 text-gray-400" />
                         </div>
-                        <input 
-                          type="text" 
-                          placeholder={`Image ${index + 1} URL or Path`} 
-                          value={imageUrls[index]} 
-                          onChange={(e) => handleUrlChange(index, e.target.value)} 
-                          className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#ec6917] focus:ring-1 focus:ring-[#ec6917] transition-all bg-white" 
-                        />
+                        <input type="text" placeholder={`Image ${index + 1} URL or Path`} value={imageUrls[index]} onChange={(e) => handleUrlChange(index, e.target.value)} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-[#ec6917] transition-all bg-white" />
                       </div>
-                      
-                      {/* Image Preview Thumbnail */}
                       <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden flex-shrink-0 border border-gray-200">
-                        <img 
-                          src={imageUrls[index] || 'https://placehold.co/100x100/e2e8f0/64748b?text=Empty'} 
-                          alt={`Preview ${index + 1}`} 
-                          className="w-full h-full object-cover" 
-                          onError={(e) => (e.currentTarget.src = 'https://placehold.co/100x100/fecaca/ef4444?text=Error')} 
-                        />
+                        <img src={imageUrls[index] || 'https://placehold.co/100'} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" onError={(e) => (e.currentTarget.src = 'https://placehold.co/100/fecaca/ef4444?text=Error')} />
                       </div>
                     </div>
                   ))}
@@ -302,83 +247,70 @@ export default function ProductsTab() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Product Name</label>
-                <input required type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917] focus:ring-1 focus:ring-[#ec6917] transition-all bg-white/50" />
+                <input required type="text" value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917] bg-white/50" />
               </div>
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Price (e.g., AUD 49.95)</label>
-                <input required type="text" value={formData.price || ''} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917] focus:ring-1 focus:ring-[#ec6917] transition-all bg-white/50" />
+                <input required type="text" value={formData.price || ''} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917] bg-white/50" />
               </div>
               
+              {/* NEW: MULTI-SELECT CATEGORIES */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Category</label>
-                <select value={formData.category || ''} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917] transition-all bg-white/50 cursor-pointer">
-                  {categories.map((cat: string) => <option key={cat} value={cat}>{cat}</option>)}
-                </select>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Categories (Select Multiple - B2C and B2B)</label>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((cat: string) => {
+                    const isSelected = formData.categories?.includes(cat);
+                    return (
+                      <button
+                        type="button"
+                        key={cat}
+                        onClick={() => toggleCategory(cat)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
+                          isSelected ? 'bg-gradient-to-r from-blue-600 to-blue-800 border-blue-600 text-white shadow-md' : 'bg-white border-gray-200 text-gray-600 hover:border-blue-600'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
 
+              {/* Materials and Sizes stay the same */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Materials (Select Multiple)</label>
                 <div className="flex flex-wrap gap-2">
-                  {materials.map((mat: string) => {
-                    const isSelected = formData.materials?.includes(mat);
-                    return (
-                      <button
-                        type="button"
-                        key={mat}
-                        onClick={() => toggleMaterial(mat)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
-                          isSelected 
-                            ? 'bg-gradient-to-r from-[#063c60] to-[#084b78] border-[#063c60] text-white shadow-md' 
-                            : 'bg-white border-gray-200 text-gray-600 hover:border-[#ec6917] hover:text-[#ec6917]'
-                        }`}
-                      >
-                        {mat}
-                      </button>
-                    )
-                  })}
+                  {materials.map((mat: string) => (
+                    <button type="button" key={mat} onClick={() => toggleMaterial(mat)} className={`px-4 py-2 rounded-full text-sm font-medium border ${formData.materials?.includes(mat) ? 'bg-[#063c60] text-white' : 'bg-white'}`}>{mat}</button>
+                  ))}
                 </div>
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Available Sizes (Select Multiple)</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Available Sizes</label>
                 <div className="flex flex-wrap gap-2">
-                  {STANDARD_SIZES.map((size: string) => {
-                    const isSelected = formData.sizes?.includes(size);
-                    return (
-                      <button
-                        type="button"
-                        key={size}
-                        onClick={() => toggleSize(size)}
-                        className={`min-w-[3rem] px-3 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
-                          isSelected 
-                            ? 'bg-gradient-to-r from-[#ec6917] to-[#f27b2f] border-[#ec6917] text-white shadow-md' 
-                            : 'bg-white border-gray-200 text-gray-600 hover:border-[#063c60] hover:text-[#063c60]'
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    )
-                  })}
+                  {STANDARD_SIZES.map((size: string) => (
+                    <button type="button" key={size} onClick={() => toggleSize(size)} className={`px-3 py-2 rounded-full text-sm font-medium border ${formData.sizes?.includes(size) ? 'bg-[#ec6917] text-white' : 'bg-white'}`}>{size}</button>
+                  ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Stock Amount (Optional)</label>
-                <input type="number" min="0" placeholder="Unlimited" value={formData.stock || ''} onChange={e => setFormData({...formData, stock: e.target.value ? parseInt(e.target.value) : ''})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917] focus:ring-1 focus:ring-[#ec6917] transition-all bg-white/50" />
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Stock Amount</label>
+                <input type="number" min="0" placeholder="Unlimited" value={formData.stock || ''} onChange={e => setFormData({...formData, stock: e.target.value ? parseInt(e.target.value) : ''})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917]" />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Badge Label (Optional)</label>
-                <input type="text" placeholder="e.g., 'Best Seller'" value={formData.badge || ''} onChange={e => setFormData({...formData, badge: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917] focus:ring-1 focus:ring-[#ec6917] transition-all bg-white/50" />
+                <label className="block text-sm font-semibold text-gray-700 mb-1">Badge Label</label>
+                <input type="text" placeholder="e.g., 'Best Seller'" value={formData.badge || ''} onChange={e => setFormData({...formData, badge: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917]" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-                <textarea required rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917] focus:ring-1 focus:ring-[#ec6917] transition-all bg-white/50 resize-y" />
+                <textarea required rows={3} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-[#ec6917] resize-y" />
               </div>
               
               <div className="md:col-span-2 flex justify-end gap-3 mt-4 border-t pt-5 border-gray-100">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 rounded-full font-semibold text-gray-500 hover:bg-gray-100 transition-colors duration-300">Cancel</button>
-                <button type="submit" disabled={isSaving} className="px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-r from-[#063c60] to-[#084b78] hover:shadow-lg transition-all duration-300 disabled:opacity-70 flex items-center gap-2">
-                  {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-3 rounded-full font-semibold text-gray-500 hover:bg-gray-100">Cancel</button>
+                <button type="submit" disabled={isSaving} className="px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-r from-[#063c60] to-[#084b78] disabled:opacity-70">
                   {isSaving ? 'Saving...' : 'Save Product'}
                 </button>
               </div>

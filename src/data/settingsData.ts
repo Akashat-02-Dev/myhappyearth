@@ -1,45 +1,50 @@
 // src/data/settingsData.ts
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-
-const SETTINGS_DOC_ID = 'shop_attributes';
-const SETTINGS_COLLECTION = 'settings';
+import { db } from '@/lib/firebase'; // Ensure this points to your initialized Firebase
 
 export interface ShopSettings {
   categories: string[];
   materials: string[];
 }
 
-// Default fallback data if the database is empty
-const defaultSettings: ShopSettings = {
-  categories: ['Home & Living', 'Kitchen', 'Personal Care', 'Health', 'Office', 'Outdoors', 'Kids'],
-  materials: ['Bamboo', 'Recycled', 'Organic Cotton', 'Natural']
+const SETTINGS_DOC_ID = "shop_settings";
+
+// Consolidated categories for Admin Panel dropdown
+export const DEFAULT_SETTINGS: ShopSettings = {
+  categories: [
+    // B2C
+    "Carry Green", "The Table Edit", "Mindful Mealtime", "Daily Rituals", "Sip Sustainably", "Kind Kitchen", "Bare Essentials",
+    // B2B
+    "The Welcome Suite", "The Healing Kit", "The Comfort Collection", "The Dining Range", "The Gather Pack", "The Stay Essentials", "Build Your Bundle"
+  ],
+  materials: [
+    "Bamboo", "Jute", "Juco", "Hemp", "Cotton", "Areca Leaf", "Bagasse", "Wood", "Glass", "Stainless Steel", "Beeswax", "Paper", "Recycled Plastic", "Coconut Shell"
+  ]
 };
 
 export async function getShopSettings(): Promise<ShopSettings> {
   try {
-    const docRef = doc(db, SETTINGS_COLLECTION, SETTINGS_DOC_ID);
+    const docRef = doc(db, "settings", SETTINGS_DOC_ID);
     const docSnap = await getDoc(docRef);
-    
+
     if (docSnap.exists()) {
       return docSnap.data() as ShopSettings;
     } else {
-      // If no settings exist yet, create the document with the defaults
-      await setDoc(docRef, defaultSettings);
-      return defaultSettings;
+      await setDoc(docRef, DEFAULT_SETTINGS);
+      return DEFAULT_SETTINGS;
     }
   } catch (error) {
-    console.error("Error fetching settings:", error);
-    return defaultSettings;
+    console.error("Error fetching shop settings:", error);
+    return DEFAULT_SETTINGS; 
   }
 }
 
 export async function saveShopSettings(settings: ShopSettings): Promise<void> {
   try {
-    const docRef = doc(db, SETTINGS_COLLECTION, SETTINGS_DOC_ID);
-    await setDoc(docRef, settings, { merge: true });
+    const docRef = doc(db, "settings", SETTINGS_DOC_ID);
+    await setDoc(docRef, settings);
   } catch (error) {
-    console.error("Error saving settings:", error);
+    console.error("Error saving shop settings:", error);
     throw error;
   }
-}   
+}

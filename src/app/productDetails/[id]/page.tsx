@@ -106,7 +106,7 @@ export default function DynamicProductPage() {
       { text: displayMaterials, label: 'MATERIALS' },
       { text: displaySizes, label: 'AVAILABLE SIZES' }, 
       { text: product.badge || 'N/A', label: 'CERTIFIED' },
-      { text: product.category, label: 'CATEGORY' },
+      { text: product.categories?.join(', ') || product.category || 'N/A', label: 'CATEGORY' },
     ],
   };
 
