@@ -12,7 +12,7 @@ export interface Product {
   imageUrls?: string[]; 
   badge: string;
   category: string; // Legacy fallback
-  categories?: string[]; // NEW: Multi-category support
+  categories?: string[]; // NEW: Multi-category support (B2C & B2B)
   material: string; 
   materials?: string[]; 
   sizes?: string[]; 

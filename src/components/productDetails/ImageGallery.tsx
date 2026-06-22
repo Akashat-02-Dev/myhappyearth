@@ -6,27 +6,38 @@ import Image from 'next/image';
 
 interface ImageGalleryProps {
   mainImage: string;
-  // Allow nulls or undefined just in case the database returns empty slots
-  thumbnails?: (string | null | undefined)[]; 
+  thumbnails?: (string | null | undefined)[];
 }
 
+const fallbackImage = "https://placehold.co/600x600/FAF3DD/344E41?text=No+Image";
+
+// --- BULLETPROOF URL FORMATTER ---
+const getSafeUrl = (url: string | null | undefined) => {
+  if (!url || url.trim() === '') return fallbackImage;
+  let formattedUrl = url.trim();
+  
+  if (!formattedUrl.startsWith('http') && !formattedUrl.startsWith('/')) {
+    formattedUrl = '/' + formattedUrl;
+  }
+  
+  return formattedUrl.replace(/ /g, '%20');
+};
+
 const ImageGallery: React.FC<ImageGalleryProps> = ({ mainImage, thumbnails = [] }) => {
-  // THE FIX: Filter out any empty strings, nulls, or undefined values.
-  // This ensures we ONLY map over real, valid image URLs.
-  const validThumbnails = thumbnails.filter((thumb): thumb is string => !!thumb && thumb.trim() !== '');
+  // Filter out empty items and safely format the thumbnails
+  const validThumbnails = thumbnails
+    .filter((thumb): thumb is string => !!thumb && thumb.trim() !== '')
+    .map(thumb => getSafeUrl(thumb));
 
-  // Brand-colored fallback image
-  const fallbackImage = "https://placehold.co/600x600/FAF3DD/344E41?text=No+Image";
-
-  // Set the initial active image. If mainImage is empty, fallback to the first valid thumbnail.
-  const [activeImage, setActiveImage] = useState(mainImage || validThumbnails[0] || fallbackImage);
+  const safeMainImage = getSafeUrl(mainImage);
+  
+  const [activeImage, setActiveImage] = useState(safeMainImage !== fallbackImage ? safeMainImage : (validThumbnails[0] || fallbackImage));
   const [imageFailed, setImageFailed] = useState(false);
 
-  // If the product data loads asynchronously, we want to make sure the main image updates.
   useEffect(() => {
-    setImageFailed(false); // Reset error state on new data load
-    if (mainImage && mainImage.trim() !== '') {
-      setActiveImage(mainImage);
+    setImageFailed(false); 
+    if (safeMainImage && safeMainImage !== fallbackImage) {
+      setActiveImage(safeMainImage);
     } else if (validThumbnails.length > 0) {
       setActiveImage(validThumbnails[0]);
     }
@@ -42,17 +53,16 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ mainImage, thumbnails = [] 
           src={displayImage}
           alt="Main Product"
           fill
-          unoptimized // CRITICAL FIX: Bypass Next.js optimizer to stop Firebase timeouts
+          unoptimized 
           className="object-cover"
           priority
           sizes="(max-w-768px) 100vw, 50vw"
-          onError={() => setImageFailed(true)} // Safely catch broken links
+          onError={() => setImageFailed(true)} 
         />
-        {/* Placeholder for the water droplets effect */}
         <div className="absolute inset-0 bg-white/20 pointer-events-none"></div>
       </div>
 
-      {/* Thumbnails - Only render this grid if there are actual thumbnails to show */}
+      {/* Thumbnails */}
       {validThumbnails.length > 0 && (
         <div className="grid grid-cols-4 gap-4">
           {validThumbnails.map((thumb, index) => (
@@ -60,7 +70,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ mainImage, thumbnails = [] 
               key={index}
               onClick={() => {
                 setActiveImage(thumb);
-                setImageFailed(false); // Reset error state when switching to a new thumbnail
+                setImageFailed(false);
               }}
               className={`relative aspect-[1/1] rounded-xl overflow-hidden border transition-all duration-300 ${
                 activeImage === thumb
@@ -72,9 +82,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ mainImage, thumbnails = [] 
                 src={thumb} 
                 alt={`Thumbnail ${index + 1}`} 
                 fill 
-                unoptimized // CRITICAL FIX: Bypass Next.js optimizer to stop Firebase timeouts
+                unoptimized 
                 className="object-cover" 
-                sizes="25vw"
+                sizes="25vw" 
               />
             </button>
           ))}

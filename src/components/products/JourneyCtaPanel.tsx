@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 
 interface JourneyCtaPanelProps {
-  pathLabel: string;
   icon: string;
   title: string;
   subtitle: string;
@@ -17,7 +16,6 @@ interface JourneyCtaPanelProps {
 }
 
 export default function JourneyCtaPanel({ 
-  pathLabel,
   icon,
   title, 
   subtitle, 
@@ -62,7 +60,6 @@ export default function JourneyCtaPanel({
         {/* Floating Path Label (Overlaps the image slightly) */}
         <div className="absolute -top-6 left-8 md:left-10 lg:left-12 flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm tracking-wide shadow-lg border border-white/10 backdrop-blur-md transition-transform duration-300 group-hover:-translate-y-1 z-10" style={{ backgroundColor: isLight ? '#FAF3DD' : '#2A3F34', color: isLight ? '#344E41' : '#A3B18A' }}>
           <span className="text-lg">{icon}</span>
-          <span>{pathLabel}</span>
         </div>
 
         {/* Text Content */}
