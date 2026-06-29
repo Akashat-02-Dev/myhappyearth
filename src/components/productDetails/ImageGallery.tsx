@@ -1,4 +1,3 @@
-// src/components/productDetails/ImageGallery.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -20,7 +19,11 @@ const getSafeUrl = (url: string | null | undefined) => {
     formattedUrl = '/' + formattedUrl;
   }
   
-  return formattedUrl.replace(/ /g, '%20');
+  try {
+    return encodeURI(decodeURI(formattedUrl));
+  } catch (e) {
+    return formattedUrl.replace(/ /g, '%20');
+  }
 };
 
 const ImageGallery: React.FC<ImageGalleryProps> = ({ mainImage, thumbnails = [] }) => {
@@ -53,7 +56,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ mainImage, thumbnails = [] 
           src={displayImage}
           alt="Main Product"
           fill
-          unoptimized 
+          unoptimized // CRITICAL for Hostinger
           className="object-cover"
           priority
           sizes="(max-w-768px) 100vw, 50vw"

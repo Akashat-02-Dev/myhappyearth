@@ -21,22 +21,26 @@ interface ProductCardProps {
 export default function ProductCard({ product, currentPath }: ProductCardProps) {
   const [imageFailed, setImageFailed] = useState(false);
 
+  // Safely extract the primary image
   const rawImageUrl = Array.isArray(product.imageUrl) ? product.imageUrl[0] : product.imageUrl;
   const fallbackImage = "https://placehold.co/600x600/FAF3DD/344E41?text=No+Image";
 
   // --- BULLETPROOF URL FORMATTER ---
-  // This safely cleans the path from the database so Hostinger never throws a 404
   const getSafeUrl = (url: string | undefined) => {
     if (!url || url.trim() === '') return fallbackImage;
     let formattedUrl = url.trim();
     
-    // 1. If it's a local path and the user forgot the leading slash in the admin panel, auto-add it.
     if (!formattedUrl.startsWith('http') && !formattedUrl.startsWith('/')) {
       formattedUrl = '/' + formattedUrl;
     }
     
-    // 2. If there are spaces in the filename (e.g. "Bag front.webp"), safely encode them.
-    return formattedUrl.replace(/ /g, '%20');
+    try {
+      // Prevents double-encoding while safely encoding spaces and special characters
+      return encodeURI(decodeURI(formattedUrl));
+    } catch (e) {
+      // Fallback if decodeURI fails due to a malformed string
+      return formattedUrl.replace(/ /g, '%20');
+    }
   };
 
   const safeImageUrl = getSafeUrl(rawImageUrl);
@@ -60,7 +64,7 @@ export default function ProductCard({ product, currentPath }: ProductCardProps) 
             src={displayUrl} 
             alt={product.name || 'Product'} 
             fill
-            unoptimized 
+            unoptimized // CRITICAL for Hostinger
             sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
             className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-110"
             onError={() => setImageFailed(true)}
@@ -109,7 +113,6 @@ export default function ProductCard({ product, currentPath }: ProductCardProps) 
           </button>
         </Link>
       </div>
-      
     </div>
   );
 }

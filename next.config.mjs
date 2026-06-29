@@ -1,12 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Bypasses Next.js image optimization to prevent Hostinger 404s/timeouts
+async rewrites() {
+    return [
+      {
+        source: '/product_images/:path*',
+        // Replace with your actual Hostinger base URL
+        destination: 'https://your-hostinger-domain.com/product_images/:path*',
+      },
+    ];
+  },
+  
+  // 2. Allow remote images from your hostinger domain
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**', 
+        hostname: 'your-hostinger-domain.com', // Replace with your actual Hostinger hostname
       },
     ],
   },

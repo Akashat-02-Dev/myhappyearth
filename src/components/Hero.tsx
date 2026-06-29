@@ -1,93 +1,74 @@
 // src/components/Hero.tsx
 "use client";
-
 import { useState, useEffect } from 'react';
 
-// Define the array of slides containing both the background image and its specific tagline
 const heroSlides = [
-  {
-    image: "/hero-bg.png",
-    tagline: "Passing down traditions, not pollution. Clean coastlines. Zero waste"
-  },
-  {
-    image: "/hero-bg-2.jpg", // Add this to your public folder
-    tagline: "This is what we are fighting to protect"
-  },
-  {
-    image: "/hero-bg-3.png",
-    tagline: "Their home is beautiful. We are making it unlivable."
-  },
-  {
-    image: "/hero-bg-4.png", // Add this to your public folder
-    tagline: "What if the choices you made today saved the oceans tomorrow?"
-  }
+  { image: "/hero-bg.png" },
+  { image: "/hero-bg-2.jpg" },
+  { image: "/hero-bg-3.png" },
+  { image: "/hero-bg-4.png" }
 ];
 
 export default function Hero() {
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
-  // Effect to handle the auto-sliding logic
   useEffect(() => {
     const slideInterval = setInterval(() => {
-      // Move to the next image, loop back to 0 if at the end
       setCurrentBgIndex((prevIndex) => 
         prevIndex === heroSlides.length - 1 ? 0 : prevIndex + 1
       );
-    }, 5000); // Changes image every 5 seconds (5000ms)
-
-    // Cleanup interval on unmount
+    }, 5000); 
     return () => clearInterval(slideInterval);
   }, []);
 
   return (
     <section className="relative w-full min-h-screen flex flex-col items-center justify-center pt-32 pb-16 md:pb-24 overflow-hidden">
-      
       {/* Background Image Carousel Container */}
-      {/* We map through the images and render them all stacked on top of each other.
-          Only the one matching currentBgIndex gets opacity-100, the rest are opacity-0.
-          Tailwind handles the smooth fade transition. 
-      */}
       {heroSlides.map((slide, index) => (
         <div 
           key={index}
-          className={`absolute inset-0 bg-cover bg-center brightness-[0.6] saturate-[0.9] transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 bg-cover bg-center brightness-[0.5] transition-opacity duration-1000 ease-in-out ${
             index === currentBgIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           style={{ backgroundImage: `url(${slide.image})` }} 
         >
-          {/* Only render the dark overlay on the active image to avoid stacking overlays */}
           {index === currentBgIndex && (
-            <div className="absolute inset-0 bg-earth-deep/20 transition-opacity duration-1000"></div>
+            <div className="absolute inset-0 bg-earth-deep/30 transition-opacity duration-1000"></div>
           )}
         </div>
       ))}
 
-      {/* Main Content Container (z-10 ensures it stays above the fading backgrounds) */}
-      {/* Centered vertically, aligned to the left horizontally */}
+      {/* Main Content Container */}
       <div className="relative z-10 w-full max-w-[120rem] mx-auto px-6 md:px-12 lg:px-24 flex items-center h-full">
-        
-        {/* Left Column (Dynamic Cross-fading Taglines inheriting original title styling) */}
-        <div className="relative w-full md:w-[55%] lg:w-[45%] xl:w-[35%] h-[200px] md:h-[300px] flex items-center">
+        <div className="relative w-full md:w-[75%] lg:w-[65%] xl:w-[55%] flex flex-col items-center md:items-start text-center md:text-left text-earth-light gap-8">
           
-          {/* We map through the taglines to cross-fade them perfectly in sync with the backgrounds */}
-          {heroSlides.map((slide, index) => (
-            <div 
-              key={index}
-              className={`absolute inset-x-0 transition-all duration-1000 ease-in-out flex flex-col items-center md:items-start text-center md:text-left ${
-                index === currentBgIndex 
-                  ? 'opacity-100 translate-y-0 blur-none' 
-                  : 'opacity-0 translate-y-4 blur-sm pointer-events-none'
-              }`}
-            >
-              {/* Inherited the exact font classes from the original "My Happy Earth" title */}
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-earth-light leading-tight drop-shadow-lg">
-                {slide.tagline}
-              </h2>
-            </div>
-          ))}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-tight drop-shadow-lg">
+            What if the choices you made today saved the oceans tomorrow?
+          </h1>
           
-        </div>
+          <p className="text-lg md:text-xl font-sans font-medium text-earth-light/90 drop-shadow-md leading-relaxed max-w-2xl">
+            We're building a movement of everyday people refusing to be part of the plastic problem. One small swap at a time, we're cleaning coastlines, restoring forests, and proving that another way of living is possible.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <button className="w-full sm:w-auto bg-earth-sage text-earth-deep px-8 py-4 rounded-full font-bold text-lg hover:bg-earth-light transition-colors shadow-lg hover:shadow-xl">
+              Join the Movement
+            </button>
+            <button className="w-full sm:w-auto bg-transparent border-2 border-earth-light text-earth-light px-8 py-4 rounded-full font-bold text-lg hover:bg-earth-light/10 transition-colors shadow-lg">
+              Explore Sustainable Solutions
+            </button>
+          </div>
 
+          {/* Hero Stat Strip */}
+          <div className="mt-6 md:mt-10 pt-6 border-t border-earth-light/20 flex flex-wrap justify-center md:justify-start items-center gap-3 sm:gap-6 text-xs sm:text-sm font-bold tracking-widest uppercase text-earth-light/90">
+            <span>3,500+ people taking action</span>
+            <span className="hidden sm:inline">·</span>
+            <span>50,000 trees planted</span>
+            <span className="hidden sm:inline">·</span>
+            <span>800kg plastic diverted</span>
+          </div>
+
+        </div>
       </div>
     </section>
   );

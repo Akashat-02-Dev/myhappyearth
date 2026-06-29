@@ -1,105 +1,58 @@
-// components/WhyChooseUs.tsx
-
-export default function WhyChooseUs() {
-  const features = [
+// src/components/ImpactStats.tsx
+export default function ImpactStats() {
+  const stats = [
     {
-      title: "100% Eco-Friendly Materials",
-      description: "Our products are made from sustainable, natural, and renewable resources",
-      // Leaf with a drop icon
-      icon: (
-<svg 
-  className="w-16 h-16 text-earth-forest mb-6" 
-  fill="none" 
-  stroke="currentColor" 
-  strokeWidth="1.5" 
-  strokeLinecap="round" 
-  strokeLinejoin="round" 
-  viewBox="0 0 24 24"
->
-  <circle cx="12" cy="12" r="10" />
-  <path d="M7 3.34V5a3 3 0 0 0 3 3 2 2 0 0 1 2 2c0 1.1.9 2 2 2a2 2 0 0 0 2-2c0-1.1.9-2 2-2h3.17" />
-  <path d="M11 21.95V18a2 2 0 0 0-2-2 2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05" />
-  <path d="M21.54 15H17a2 2 0 0 0-2 2v4.54" />
-</svg>
-      )
+      number: "2,500+",
+      title: "Products Recycled",
+      description: "Items rescued from the waste cycle and given a second life - because \"throwaway\" should never have meant \"forever.\""
     },
     {
-      title: "Proudly Australian Owned",
-      description: "Designed, sourced, and produced right here in Australia",
-      // Map of Australia (Simplified approximation for clean rendering)
-      icon: (
-<svg 
-  className="w-16 h-16 text-earth-forest mb-6" 
-  fill="none" 
-  stroke="currentColor" 
-  strokeWidth="1.5" 
-  strokeLinecap="round" 
-  strokeLinejoin="round" 
-  viewBox="0 0 24 24"
->
-  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-</svg>
-      )
+      number: "50,000+",
+      title: "Trees Planted",
+      description: "Roots in the ground, carbon in the trunk, shade for the next generation. Reforestation is repair - and we're not stopping."
     },
     {
-      title: "Plastic-Free Packaging",
-      description: "Compostable and recyclable packaging for a healthier planet",
-      // Open box with recycle icon
-      icon: (
-        <svg className="w-16 h-16 text-earth-forest mb-6" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.27 6.96L12 12.01l8.73-5.05" />
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 22.08V12" />
-          {/* Subtle inner lines representing flaps */}
-          <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 4.21l4.5 2.6 4.5-2.6" />
-        </svg>
-      )
+      number: "800 kg",
+      title: "Plastic Diverted",
+      description: "Nearly a tonne of plastic that will never reach a coastline, a river, or a turtle's stomach. Every gram replaced was a gram refused."
     },
     {
-      title: "Made for Life, Not Landfills",
-      description: "We believe everyday items shouldn't outlive us. Everything we sell is designed to do its job, then return safely to the earth.",
-      // Circular economy arrows
-      icon: (
-<svg 
-  className="w-16 h-16 text-earth-forest mb-6" 
-  fill="none" 
-  stroke="currentColor" 
-  strokeWidth="1.5" 
-  strokeLinecap="round" 
-  strokeLinejoin="round" 
-  viewBox="0 0 24 24"
->
-  <path d="M12 21v-8" />
-  <path d="M12 13a8.995 8.995 0 0 1-6-8c2.5 0 5 1.5 6 8Z" />
-  <path d="M12 13c1-6 3.5-8 6-8a8.995 8.995 0 0 1-6 8Z" />
-</svg>
-      )
+      number: "3,500+",
+      title: "People Who Took Action",
+      description: "Not customers. Not transactions. People who looked at the problem and chose to be part of the solution."
     }
   ];
 
   return (
-    <section className="py-20 px-12 bg-earth-light">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-sans font-bold text-center text-earth-forest mb-12 uppercase tracking-wide">
-          Why Choose Us
+    <section className="py-24 px-6 md:px-12 lg:px-24 bg-[#FAF3DD] relative border-t border-earth-deep/5">
+      <div className="max-w-7xl mx-auto flex flex-col items-center">
+        <h2 className="text-3xl md:text-5xl font-serif font-bold text-center text-earth-deep mb-4 leading-tight max-w-3xl">
+          This is what happens when thousands of us refuse to look away.
         </h2>
+        <div className="w-24 h-1 bg-earth-sage mb-16 rounded-full"></div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16 w-full">
+          {stats.map((stat, index) => (
             <div 
               key={index} 
-              className="flex flex-col items-center text-center p-8 border border-earth-forest/20 rounded-[2rem] bg-white/40 shadow-sm hover:shadow-md transition-shadow duration-300"
+              className="flex flex-col items-center text-center p-8 bg-white/60 rounded-3xl shadow-sm border border-earth-forest/10 hover:shadow-lg hover:-translate-y-2 transition-all duration-300"
             >
-              {feature.icon}
-              <h3 className="text-xl font-bold text-earth-forest mb-4 leading-tight px-2">
-                {feature.title}
+              <h3 className="text-4xl font-extrabold text-earth-forest mb-2">
+                {stat.number}
               </h3>
-              <p className="text-earth-deep/80 text-sm leading-relaxed px-1">
-                {feature.description}
+              <h4 className="text-xl font-bold text-earth-deep mb-4 uppercase tracking-wide">
+                {stat.title}
+              </h4>
+              <p className="text-earth-deep/80 text-sm leading-relaxed">
+                {stat.description}
               </p>
             </div>
           ))}
         </div>
+
+        <button className="bg-earth-deep text-earth-light px-10 py-4 rounded-full font-bold text-lg hover:bg-earth-forest transition-all duration-300 shadow-xl">
+          See the Full Impact Report
+        </button>
       </div>
     </section>
   );
