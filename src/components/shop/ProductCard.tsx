@@ -26,19 +26,23 @@ export default function ProductCard({ product, currentPath }: ProductCardProps) 
   const fallbackImage = "https://placehold.co/600x600/FAF3DD/344E41?text=No+Image";
 
   // --- BULLETPROOF URL FORMATTER ---
-  const getSafeUrl = (url: string | undefined) => {
+const getSafeUrl = (url: string | undefined) => {
     if (!url || url.trim() === '') return fallbackImage;
     let formattedUrl = url.trim();
     
-    if (!formattedUrl.startsWith('http') && !formattedUrl.startsWith('/')) {
-      formattedUrl = '/' + formattedUrl;
+    // 1. If it's an external link (Unsplash, etc.), leave it alone
+    if (formattedUrl.startsWith('http')) {
+      try { return encodeURI(decodeURI(formattedUrl)); } 
+      catch (e) { return formattedUrl.replace(/ /g, '%20'); }
     }
     
+    // 2. AUTO-CORRECT: Extract just the filename and force the correct directory
+    const fileName = formattedUrl.split('/').pop();
+    formattedUrl = `/product_images/${fileName}`;
+    
     try {
-      // Prevents double-encoding while safely encoding spaces and special characters
       return encodeURI(decodeURI(formattedUrl));
     } catch (e) {
-      // Fallback if decodeURI fails due to a malformed string
       return formattedUrl.replace(/ /g, '%20');
     }
   };

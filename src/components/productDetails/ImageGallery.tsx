@@ -11,13 +11,19 @@ interface ImageGalleryProps {
 const fallbackImage = "https://placehold.co/600x600/FAF3DD/344E41?text=No+Image";
 
 // --- BULLETPROOF URL FORMATTER ---
+// --- BULLETPROOF URL FORMATTER ---
 const getSafeUrl = (url: string | null | undefined) => {
+  const fallbackImage = "https://placehold.co/600x600/FAF3DD/344E41?text=No+Image";
   if (!url || url.trim() === '') return fallbackImage;
   let formattedUrl = url.trim();
   
-  if (!formattedUrl.startsWith('http') && !formattedUrl.startsWith('/')) {
-    formattedUrl = '/' + formattedUrl;
+  if (formattedUrl.startsWith('http')) {
+    try { return encodeURI(decodeURI(formattedUrl)); } 
+    catch (e) { return formattedUrl.replace(/ /g, '%20'); }
   }
+  
+  const fileName = formattedUrl.split('/').pop();
+  formattedUrl = `/product_images/${fileName}`;
   
   try {
     return encodeURI(decodeURI(formattedUrl));
