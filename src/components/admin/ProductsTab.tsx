@@ -11,9 +11,15 @@ const STANDARD_SIZES: string[] = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', 'One 
 const getSafeUrl = (url: string | null | undefined) => {
   if (!url || url.trim() === '') return 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image';
   let formattedUrl = url.trim();
-  if (!formattedUrl.startsWith('http') && !formattedUrl.startsWith('/')) {
-    formattedUrl = '/' + formattedUrl;
+  
+  if (formattedUrl.startsWith('http')) {
+    try { return encodeURI(decodeURI(formattedUrl)); } 
+    catch (e) { return formattedUrl.replace(/ /g, '%20'); }
   }
+  
+  const fileName = formattedUrl.split('/').pop();
+  formattedUrl = `/product_images/${fileName}`;
+  
   try {
     return encodeURI(decodeURI(formattedUrl));
   } catch (e) {
