@@ -6,7 +6,6 @@ import Footer from '@/components/Footer';
 
 // Modular Products Components
 import ProductsHero from '@/components/products/ProductsHero';
-import ProductsCategoriesSection from '@/components/products/ProductsCategoriesSection';
 import OurJourneySection from '@/components/products/OurJourneySection';
 
 export default function ProductsPage() {
@@ -25,8 +24,6 @@ export default function ProductsPage() {
       {/* Component 3: Split CTA Journey Section */}
       <OurJourneySection />
       
-      {/* Component 2: Products Categories Grid */}
-      <ProductsCategoriesSection />
 
 
       {/* Component 4: Standard Footer */}

@@ -1,6 +1,7 @@
-// src/components/Hero.tsx
 "use client";
+
 import { useState, useEffect } from 'react';
+import Link from 'next/link'; // <-- ADDED: Import Link from Next.js
 
 const heroSlides = [
   { image: "/hero-bg.png" },
@@ -18,6 +19,7 @@ export default function Hero() {
         prevIndex === heroSlides.length - 1 ? 0 : prevIndex + 1
       );
     }, 5000); 
+
     return () => clearInterval(slideInterval);
   }, []);
 
@@ -50,21 +52,30 @@ export default function Hero() {
             We're building a movement of everyday people refusing to be part of the plastic problem. One small swap at a time, we're cleaning coastlines, restoring forests, and proving that another way of living is possible.
           </p>
           
+          {/* --- UPDATED BUTTONS SECTION --- */}
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-            <button className="w-full sm:w-auto bg-earth-sage text-earth-deep px-8 py-4 rounded-full font-bold text-lg hover:bg-earth-light transition-colors shadow-lg hover:shadow-xl">
+            <Link 
+              href="/enquiry"
+              className="w-full sm:w-auto flex justify-center bg-earth-sage text-earth-deep px-8 py-4 rounded-full font-bold text-lg hover:bg-earth-light transition-colors shadow-lg hover:shadow-xl"
+            >
               Join the Movement
-            </button>
-            <button className="w-full sm:w-auto bg-transparent border-2 border-earth-light text-earth-light px-8 py-4 rounded-full font-bold text-lg hover:bg-earth-light/10 transition-colors shadow-lg">
+            </Link>
+            
+            <Link 
+              href="/products"
+              className="w-full sm:w-auto flex justify-center bg-transparent border-2 border-earth-light text-earth-light px-8 py-4 rounded-full font-bold text-lg hover:bg-earth-light/10 transition-colors shadow-lg"
+            >
               Explore Sustainable Solutions
-            </button>
+            </Link>
           </div>
+          {/* ------------------------------- */}
 
           {/* Hero Stat Strip */}
           <div className="mt-6 md:mt-10 pt-6 border-t border-earth-light/20 flex flex-wrap justify-center md:justify-start items-center gap-3 sm:gap-6 text-xs sm:text-sm font-bold tracking-widest uppercase text-earth-light/90">
             <span>3,500+ people taking action</span>
-            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">•</span>
             <span>50,000 trees planted</span>
-            <span className="hidden sm:inline">·</span>
+            <span className="hidden sm:inline">•</span>
             <span>800kg plastic diverted</span>
           </div>
 
