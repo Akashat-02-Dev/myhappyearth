@@ -24,7 +24,7 @@ export default function HeroSection({ onOpenStory }: HeroSectionProps) {
             We're on a mission to make sustainable the default — not the exception.
           </h1>
           <p className="font-sans font-medium text-base sm:text-lg text-earth-deep/80 leading-relaxed mb-10">
-            Founded in 2023 by Arijit Maity, My Happy Earth started with one frustration: the gap between eco-marketing and eco-reality. Three years later, we've supplied 3,500+ businesses and households with packaging and products that meet the claims on the label.
+            Founded in 2023, My Happy Earth started with one frustration: the gap between eco-marketing and eco-reality. Three years later, we've supplied 15,000+ businesses and households with packaging and products that meet the claims on the label.
           </p>
           
           <button 

@@ -16,10 +16,15 @@ export default function ImpactStats() {
       title: "Plastic Diverted",
       description: "Nearly a tonne of plastic that will never reach a coastline, a river, or a turtle's stomach. Every gram replaced was a gram refused."
     },
+    // {
+    //   number: "3,500+",
+    //   title: "People Who Took Action",
+    //   description: "Not customers. Not transactions. People who looked at the problem and chose to be part of the solution."
+    // },
     {
-      number: "3,500+",
-      title: "People Who Took Action",
-      description: "Not customers. Not transactions. People who looked at the problem and chose to be part of the solution."
+      number: "150+",
+      title: "Businesses Who Partnered With Us",
+      description: "Companies who chose to be part of the solution."
     }
   ];
 
