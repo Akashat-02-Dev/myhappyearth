@@ -13,7 +13,7 @@ const journeyPaths = [
     title: "Everyday Earth",
     subtitle: "Small swaps for your daily life",
     buttonText: "Explore Personal Shop",
-    linkUrl: "/products/personal", // Update with your actual route
+    linkUrl: "#", // Update with your actual route
     imageUrl: "https://images.unsplash.com/photo-1679466230930-4c53a8f0a699?q=80&w=1224&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Replace with an actual B2C image
     theme: "light" as const,
   },
